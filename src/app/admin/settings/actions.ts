@@ -1,0 +1,54 @@
+"use server";
+
+import { createClient } from "@/lib/supabase/server";
+import { companySettingsSchema, lpSettingsSchema } from "@/lib/validators/settings";
+import { revalidatePath } from "next/cache";
+import type { ActionState } from "@/app/admin/staff/actions";
+
+export async function updateCompanySettings(
+  companyId: string,
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const supabase = await createClient();
+  const raw = Object.fromEntries(formData);
+  const parsed = companySettingsSchema.safeParse(raw);
+
+  if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const { error } = await supabase
+    .from("companies")
+    .update({
+      ...parsed.data,
+      logo_url: (formData.get("logo_url") as string) || null,
+    })
+    .eq("id", companyId);
+
+  if (error) return { error: "会社情報の更新に失敗しました" };
+  revalidatePath("/admin/settings");
+  return {};
+}
+
+export async function updateLpSettings(
+  companyId: string,
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const supabase = await createClient();
+  const raw = Object.fromEntries(formData);
+  const parsed = lpSettingsSchema.safeParse(raw);
+
+  if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors };
+
+  // upsert
+  const { error } = await supabase
+    .from("lp_settings")
+    .upsert(
+      { company_id: companyId, ...parsed.data },
+      { onConflict: "company_id" }
+    );
+
+  if (error) return { error: "LP設定の更新に失敗しました" };
+  revalidatePath("/admin/settings");
+  return {};
+}
