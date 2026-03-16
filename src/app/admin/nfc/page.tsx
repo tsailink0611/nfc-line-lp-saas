@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { NfcCreateForm } from "@/components/admin/nfc-create-form";
 import { NfcTokenRow } from "@/components/admin/nfc-token-row";
 

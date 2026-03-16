@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { StaffLpData } from "@/types/database";
@@ -18,7 +19,9 @@ import { FloatingCta } from "@/components/lp/floating-cta";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const supabase = await createClient();
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return [];
+
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("staff_members")
     .select("slug")
@@ -43,7 +46,7 @@ export async function generateMetadata({
 
   if (!staff) return { title: "担当者が見つかりません" };
 
-  const company = staff.company as { company_name: string } | null;
+  const company = staff.company as unknown as { company_name: string } | null;
   const name = `${staff.last_name} ${staff.first_name}`;
 
   return {
