@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", system-ui, sans-serif;
+  --color-primary: #1a1a2e;
+  --color-primary-light: #16213e;
+  --color-accent: #0f3460;
+  --color-accent-light: #533483;
+  --color-cta: #e94560;
+  --color-cta-hover: #c73852;
+}
+
+body {
+  font-feature-settings: "palt";
+}
