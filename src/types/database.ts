@@ -105,6 +105,8 @@ export type LpSettings = {
   cta_label: string;
   footer_text: string | null;
   theme_type: string;
+  industry_type: string | null;
+  hero_background_url: string | null;
   created_at: string;
   updated_at: string;
 };

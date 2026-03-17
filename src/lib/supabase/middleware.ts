@@ -25,17 +25,20 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const isLoginPage = request.nextUrl.pathname === "/admin/login";
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin") && !isLoginPage;
 
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login");
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-  if (isAdminRoute && !user) {
+  // 認証エラー時はログインページへ（ループ防止）
+  if (isAdminRoute && (!user || error)) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
 
-  if (request.nextUrl.pathname === "/admin/login" && user) {
+  // ログイン済みでログインページにいたら管理画面へ
+  if (isLoginPage && user && !error) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);

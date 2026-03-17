@@ -1,43 +1,41 @@
 import type { StaffLpData } from "@/types/database";
+import { FadeUp } from "./fade-up";
+import { SectionHeading } from "./section-heading";
 
 type Props = {
   staff: StaffLpData;
 };
 
 export function ProfileSection({ staff }: Props) {
+  if (!staff.profile_text && staff.career_years == null) return null;
+
   return (
-    <section className="px-6 py-10">
-      <div className="flex items-start gap-4">
-        {staff.sub_image_url && (
-          <img
-            src={staff.sub_image_url}
-            alt=""
-            className="h-20 w-20 rounded-full object-cover shadow-md"
-          />
-        )}
-        <div className="flex-1">
-          <h2 className="text-xl font-bold text-gray-900">
-            {staff.display_name ?? `${staff.last_name} ${staff.first_name}`}
-          </h2>
-          {(staff.last_name_en || staff.first_name_en) && (
-            <p className="text-sm text-gray-400">
-              {staff.first_name_en} {staff.last_name_en}
-            </p>
+    <section className="px-6 py-10 sm:px-8" style={{ backgroundColor: "var(--lp-cream)" }}>
+      <FadeUp>
+        <SectionHeading title="プロフィール" />
+
+        <div className="flex items-start gap-4">
+          {staff.sub_image_url && (
+            <img
+              src={staff.sub_image_url}
+              alt=""
+              className="h-20 w-20 shrink-0 rounded-xl object-cover shadow-md sm:h-24 sm:w-24"
+            />
           )}
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-            {staff.position && <span>{staff.position}</span>}
+          <div className="flex-1">
             {staff.career_years != null && (
-              <span>/ キャリア {staff.career_years}年</span>
+              <p className="mb-2 text-sm font-medium" style={{ color: "var(--lp-secondary)" }}>
+                キャリア {staff.career_years}年
+              </p>
+            )}
+            {staff.profile_text && (
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+                {staff.profile_text}
+              </p>
             )}
           </div>
         </div>
-      </div>
-
-      {staff.profile_text && (
-        <p className="mt-6 whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
-          {staff.profile_text}
-        </p>
-      )}
+      </FadeUp>
     </section>
   );
 }

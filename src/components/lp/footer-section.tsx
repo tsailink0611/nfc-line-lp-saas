@@ -7,7 +7,10 @@ type Props = {
 
 export function FooterSection({ company, lpSettings }: Props) {
   return (
-    <footer className="border-t border-gray-200 bg-gray-900 px-6 py-8 text-center">
+    <footer
+      className="px-6 py-8 text-center sm:px-8"
+      style={{ backgroundColor: "var(--lp-primary)", color: "var(--lp-hero-sub)" }}
+    >
       {company.logo_url && (
         <img
           src={company.logo_url}
@@ -15,13 +18,15 @@ export function FooterSection({ company, lpSettings }: Props) {
           className="mx-auto h-8 object-contain brightness-0 invert"
         />
       )}
-      <p className="mt-3 text-sm text-gray-400">{company.company_name}</p>
+      <p className="mt-3 text-sm" style={{ color: "var(--lp-hero-text)" }}>
+        {company.company_name}
+      </p>
       {lpSettings?.footer_text && (
-        <p className="mt-2 whitespace-pre-wrap text-xs text-gray-500">
+        <p className="mt-2 whitespace-pre-wrap text-xs opacity-60">
           {lpSettings.footer_text}
         </p>
       )}
-      <p className="mt-4 text-xs text-gray-600">
+      <p className="mt-4 text-xs opacity-40">
         &copy; {new Date().getFullYear()} {company.company_name}
       </p>
     </footer>
