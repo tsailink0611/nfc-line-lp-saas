@@ -28,8 +28,9 @@ export function isDarkPrimary(hex: string): boolean {
 /** DB の Company + LpSettings → CSS 変数オブジェクト */
 export function generateThemeVars(
   company: Company,
-  _lpSettings: LpSettings | null
+  lpSettings: LpSettings | null
 ): Record<string, string> {
+  void lpSettings;
   const primary = company.primary_color || "#1b2a3d";
   const secondary = company.secondary_color || "#b09060";
   const dark = isDarkPrimary(primary);

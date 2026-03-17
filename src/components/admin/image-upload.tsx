@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { Upload, X } from "lucide-react";
@@ -59,9 +60,11 @@ export function ImageUpload({ currentUrl, onUpload, onRemove, folder, className 
     <div className={cn("space-y-2", className)}>
       {currentUrl ? (
         <div className="relative inline-block">
-          <img
+          <Image
             src={currentUrl}
             alt=""
+            width={128}
+            height={128}
             className="h-32 w-32 rounded-lg object-cover"
           />
           <button

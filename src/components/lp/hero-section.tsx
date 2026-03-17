@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { StaffLpData } from "@/types/database";
 import { LineIcon } from "./line-icon";
 
@@ -62,15 +63,18 @@ export function HeroSection({ staff }: Props) {
         {/* プロフィール写真 */}
         {staff.main_image_url ? (
           <div
-            className="mb-7 h-[140px] w-[140px] overflow-hidden rounded-full sm:h-[164px] sm:w-[164px]"
+            className="relative mb-7 h-[140px] w-[140px] overflow-hidden rounded-full sm:h-[164px] sm:w-[164px]"
             style={{
               boxShadow: `0 0 0 3px var(--lp-secondary), 0 0 0 6px rgba(var(--lp-secondary-rgb), 0.2), 0 24px 64px rgba(0,0,0,0.5)`,
             }}
           >
-            <img
+            <Image
               src={staff.main_image_url}
               alt={displayName}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="164px"
+              priority
             />
           </div>
         ) : (

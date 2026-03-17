@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { FadeUp } from "./fade-up";
 import { SectionHeading } from "./section-heading";
@@ -43,10 +44,12 @@ export function VideoSection({ youtubeUrl }: Props) {
               className="group relative h-full w-full"
               aria-label="動画を再生"
             >
-              <img
+              <Image
                 src={thumbnailUrl}
                 alt="動画サムネイル"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                fill
+                className="object-cover transition duration-300 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, 600px"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition group-hover:bg-black/30">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-xl transition group-hover:scale-110">

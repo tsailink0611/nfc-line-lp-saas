@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Campaign } from "@/types/database";
 import { SectionHeading } from "./section-heading";
@@ -79,10 +80,12 @@ export function CampaignSection({ campaigns }: Props) {
             >
               {campaign.image_url ? (
                 <div className="relative h-40 overflow-hidden">
-                  <img
+                  <Image
                     src={campaign.image_url}
                     alt={campaign.title}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="300px"
                   />
                   {badge && (
                     <span className="absolute left-3 top-3 rounded-full bg-red-600 px-3 py-0.5 text-xs font-bold text-white shadow">

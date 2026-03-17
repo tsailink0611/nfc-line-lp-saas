@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Gallery } from "@/types/database";
 import { FadeUp } from "./fade-up";
 import { SectionHeading } from "./section-heading";
@@ -16,9 +17,11 @@ export function GallerySection({ galleries }: Props) {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {galleries.map((item) => (
             <div key={item.id} className="group relative overflow-hidden rounded-xl">
-              <img
+              <Image
                 src={item.image_url}
                 alt={item.caption ?? "ギャラリー画像"}
+                width={300}
+                height={300}
                 className="aspect-square w-full object-cover transition duration-300 group-hover:scale-105"
               />
               {item.caption && (

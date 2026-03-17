@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Company, LpSettings } from "@/types/database";
 
 type Props = {
@@ -12,10 +13,12 @@ export function FooterSection({ company, lpSettings }: Props) {
       style={{ backgroundColor: "var(--lp-primary)", color: "var(--lp-hero-sub)" }}
     >
       {company.logo_url && (
-        <img
+        <Image
           src={company.logo_url}
           alt={company.company_name}
-          className="mx-auto h-8 object-contain brightness-0 invert"
+          width={120}
+          height={32}
+          className="mx-auto h-8 w-auto object-contain brightness-0 invert"
         />
       )}
       <p className="mt-3 text-sm" style={{ color: "var(--lp-hero-text)" }}>

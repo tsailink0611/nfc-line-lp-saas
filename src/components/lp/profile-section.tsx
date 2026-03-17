@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { StaffLpData } from "@/types/database";
 import { FadeUp } from "./fade-up";
 import { SectionHeading } from "./section-heading";
@@ -16,9 +17,11 @@ export function ProfileSection({ staff }: Props) {
 
         <div className="flex items-start gap-4">
           {staff.sub_image_url && (
-            <img
+            <Image
               src={staff.sub_image_url}
               alt=""
+              width={96}
+              height={96}
               className="h-20 w-20 shrink-0 rounded-xl object-cover shadow-md sm:h-24 sm:w-24"
             />
           )}
