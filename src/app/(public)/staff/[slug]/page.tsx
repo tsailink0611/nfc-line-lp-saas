@@ -16,6 +16,7 @@ import { LineBenefitsSection } from "@/components/lp/line-benefits";
 import { LineCtaSection } from "@/components/lp/line-cta-section";
 import { FooterSection } from "@/components/lp/footer-section";
 import { FloatingCta } from "@/components/lp/floating-cta";
+import { BookingSection } from "@/components/lp/booking-section";
 
 // ISR: 60秒キャッシュ
 export const revalidate = 60;
@@ -161,6 +162,9 @@ export default async function StaffLpPage({
         <GallerySection galleries={data.galleries} />
         <StoreSection store={data.store} />
         <MapSection embedUrl={data.store.google_map_embed_url} />
+        {data.booking_url && (
+          <BookingSection bookingUrl={data.booking_url} staffName={staffName} />
+        )}
         <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} />
         <LineCtaSection
           lineUrl={data.staff_line_url}

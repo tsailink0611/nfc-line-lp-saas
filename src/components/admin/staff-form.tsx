@@ -223,6 +223,22 @@ export function StaffForm({ stores, staff, action }: Props) {
         />
       </div>
 
+      <div>
+        <Label htmlFor="booking_url">打ち合わせ予約URL（Googleカレンダー等）</Label>
+        <Input
+          id="booking_url"
+          name="booking_url"
+          type="url"
+          defaultValue={staff?.booking_url ?? ""}
+          placeholder="https://calendar.google.com/calendar/appointments/..."
+          error={fieldError("booking_url")}
+          className="mt-1"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          GoogleカレンダーやCalendlyの予約ページURLを入力するとLPに「打ち合わせを予約する」ボタンが表示されます
+        </p>
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <Label htmlFor="sort_order">表示順</Label>

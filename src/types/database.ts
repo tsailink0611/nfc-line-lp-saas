@@ -48,6 +48,7 @@ export type StaffMember = {
   staff_line_url: string | null;
   company_mobile_number: string | null;
   youtube_url: string | null;
+  booking_url: string | null;
   is_public: boolean;
   sort_order: number;
   created_at: string;
