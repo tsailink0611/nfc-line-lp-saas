@@ -111,6 +111,21 @@ export type LpSettings = {
   updated_at: string;
 };
 
+export type PageVisit = {
+  id: string;
+  staff_member_id: string;
+  visited_at: string;
+  user_agent: string | null;
+  referrer: string | null;
+};
+
+export type NfcResolution = {
+  id: string;
+  nfc_token_id: string;
+  resolved_at: string;
+  user_agent: string | null;
+};
+
 export type AdminUser = {
   id: string;
   company_id: string;

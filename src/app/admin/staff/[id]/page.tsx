@@ -5,6 +5,8 @@ import { GalleryManager } from "@/components/admin/gallery-manager";
 import { updateStaff, deleteStaff } from "@/app/admin/staff/actions";
 import { notFound } from "next/navigation";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 
 export default async function EditStaffPage({
   params,
@@ -38,7 +40,17 @@ export default async function EditStaffPage({
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">担当者 編集</h1>
-        <DeleteButton onDelete={deleteStaff.bind(null, id)} />
+        <div className="flex items-center gap-2">
+          {staff.is_public && (
+            <a href={`/staff/${staff.slug}`} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm">
+                <ExternalLink className="mr-1.5 h-4 w-4" />
+                LPをプレビュー
+              </Button>
+            </a>
+          )}
+          <DeleteButton onDelete={deleteStaff.bind(null, id)} />
+        </div>
       </div>
 
       <div className="mt-6 space-y-6">

@@ -80,6 +80,31 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
         </Select>
       </div>
 
+      <div>
+        <Label htmlFor="industry_type">業種テンプレート</Label>
+        <Select id="industry_type" name="industry_type" defaultValue={lpSettings?.industry_type ?? "real_estate"} className="mt-1">
+          <option value="real_estate">不動産・建築</option>
+          <option value="construction">建築・リフォーム</option>
+          <option value="automotive">自動車</option>
+          <option value="general">汎用</option>
+        </Select>
+        <p className="mt-1 text-xs text-gray-500">LINE連携のメリット表示内容が業種に合わせて変わります</p>
+      </div>
+
+      <div>
+        <Label htmlFor="hero_background_url">ヒーロー背景画像URL</Label>
+        <Input
+          id="hero_background_url"
+          name="hero_background_url"
+          type="url"
+          defaultValue={lpSettings?.hero_background_url ?? ""}
+          placeholder="https://..."
+          error={fieldError("hero_background_url")}
+          className="mt-1"
+        />
+        <p className="mt-1 text-xs text-gray-500">空欄の場合はグラデーション背景を使用します</p>
+      </div>
+
       <div className="flex justify-end">
         <Button type="submit" disabled={pending}>{pending ? "保存中..." : "LP設定を保存"}</Button>
       </div>

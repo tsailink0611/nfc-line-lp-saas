@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createStaticClient } from "@/lib/supabase/static";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import type { StaffLpData } from "@/types/database";
 import { generateThemeVars } from "@/lib/theme";
@@ -124,6 +125,19 @@ export default async function StaffLpPage({
   const data = await getStaffData(slug);
 
   if (!data) notFound();
+
+  // ページ訪問をトラッキング（ISR: キャッシュ中は実行されないが best-effort で記録）
+  try {
+    const headersList = await headers();
+    const supabase = await createClient();
+    await supabase.from("page_visits").insert({
+      staff_member_id: data.id,
+      user_agent: headersList.get("user-agent"),
+      referrer: headersList.get("referer"),
+    });
+  } catch {
+    // トラッキング失敗はサイレントに無視
+  }
 
   const ctaLabel = data.lp_settings?.cta_label ?? "LINEで相談する";
   const staffName =

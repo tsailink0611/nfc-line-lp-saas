@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
@@ -10,7 +10,7 @@ export async function GET(
 
   const { data: nfcToken } = await supabase
     .from("nfc_tokens")
-    .select("target_path, is_active")
+    .select("id, target_path, is_active")
     .eq("token", token)
     .single();
 
@@ -32,6 +32,15 @@ export async function GET(
       }
     );
   }
+
+  // NFCスキャンをトラッキング（fire and forget: 失敗してもリダイレクトは行う）
+  supabase
+    .from("nfc_resolutions")
+    .insert({
+      nfc_token_id: nfcToken.id,
+      user_agent: request.headers.get("user-agent"),
+    })
+    .then(() => {});
 
   return NextResponse.redirect(
     new URL(nfcToken.target_path, process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"),

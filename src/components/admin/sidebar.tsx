@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  BarChart2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/admin/stores", label: "店舗", icon: Store },
   { href: "/admin/campaigns", label: "キャンペーン", icon: Megaphone },
   { href: "/admin/nfc", label: "NFC管理", icon: CreditCard },
+  { href: "/admin/analytics", label: "分析", icon: BarChart2 },
   { href: "/admin/settings", label: "設定", icon: Settings },
 ];
 

@@ -14,6 +14,12 @@ export const lpSettingsSchema = z.object({
   cta_label: z.string().min(1, "CTA文言は必須です"),
   footer_text: z.string().optional(),
   theme_type: z.string().default("default"),
+  industry_type: z.string().default("real_estate"),
+  hero_background_url: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
 });
 
 export type CompanySettingsFormData = z.infer<typeof companySettingsSchema>;

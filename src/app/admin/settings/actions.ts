@@ -40,13 +40,17 @@ export async function updateLpSettings(
 
   if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors };
 
+  // 空文字列はnullに変換
+  const upsertData = {
+    company_id: companyId,
+    ...parsed.data,
+    hero_background_url: parsed.data.hero_background_url || null,
+  };
+
   // upsert
   const { error } = await supabase
     .from("lp_settings")
-    .upsert(
-      { company_id: companyId, ...parsed.data },
-      { onConflict: "company_id" }
-    );
+    .upsert(upsertData, { onConflict: "company_id" });
 
   if (error) return { error: "LP設定の更新に失敗しました" };
   revalidatePath("/admin/settings");
