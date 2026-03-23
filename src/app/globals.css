@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", system-ui, sans-serif;
+  --font-serif: "Noto Serif JP", serif;
+  --font-display: "Cormorant Garamond", serif;
+  --color-primary: #1a1a2e;
+  --color-primary-light: #16213e;
+  --color-accent: #0f3460;
+  --color-accent-light: #533483;
+  --color-cta: #e94560;
+  --color-cta-hover: #c73852;
+}
+
+body {
+  font-feature-settings: "palt";
+}
+
+/* LP fade-up animation */
+.lp-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.lp-fade-up.lp-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* LINE CTA pulse */
+@keyframes lp-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(6, 199, 85, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(6, 199, 85, 0); }
+}
+.lp-cta-pulse {
+  animation: lp-pulse 2.5s ease-in-out infinite;
+}
