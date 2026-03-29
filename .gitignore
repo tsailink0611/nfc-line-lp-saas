@@ -42,3 +42,10 @@ next-env.d.ts
 # cloudflare
 .open-next/
 .wrangler/
+
+# deploy artifacts
+deploy_log.txt
+scripts/
+
+# windows junction artifacts
+Users/
