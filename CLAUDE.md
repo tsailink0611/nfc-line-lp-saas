@@ -56,11 +56,26 @@ Act ←────────────────────── Check
 
 設計判断に迷ったとき、以下の基準を参照すること：
 
-- NFC製品全体像：`ai-organization-os/.claude/skills/nfc-product-overview/`
-- 提案書テンプレート：`ai-organization-os/templates/proposal.md`
-- 品質評価基準：`ai-organization-os/.claude/rules/evaluation-criteria.md`
-- 文書スタイル：`ai-organization-os/.claude/rules/writing-style.md`
-- 機密情報ルール：`ai-organization-os/.claude/rules/confidentiality.md`
-- 安全表現ルール：`ai-organization-os/.claude/rules/safety.md`
+- NFC製品全体像：`~/ai-organization-os/.claude/skills/nfc-product-overview/`
+- 提案書テンプレート：`~/ai-organization-os/templates/proposal.md`
+- 品質評価基準：`~/ai-organization-os/.claude/rules/evaluation-criteria.md`
+- 文書スタイル：`~/ai-organization-os/.claude/rules/writing-style.md`
+- 機密情報ルール：`~/ai-organization-os/.claude/rules/confidentiality.md`
+- 安全表現ルール：`~/ai-organization-os/.claude/rules/safety.md`
 
-※ パスはローカル環境に合わせて調整すること
+#### 環境別の参照方法
+
+| 環境 | 参照方法 |
+|---|---|
+| ローカル Claude Code CLI | 上記パス（`~/ai-organization-os/...`）を直接参照可能 |
+| Claude Code Web セッション | 1リポ＝1セッションのため直接参照不可。経営OSリポの設計書・要件定義はセッション間で手動コピー（貼り付け）して引き渡す |
+
+```
+ローカルPC
+├── ~/ai-organization-os/        ← 経営OS（Plan/Act）
+│   └── .claude/skills/...
+├── ~/nfc-line-lp-saas/          ← NFC営業OS（Do/Check）★本リポ
+│   └── CLAUDE.md に参照パスを記載
+```
+
+> **Web環境での運用ルール**: 経営OSリポで作成した設計書・要件定義の内容を、本リポのセッションに貼り付けて実装指示とする。実装結果（テスト結果・KPI数値など）は逆方向に貼り付けてフィードバックする。
