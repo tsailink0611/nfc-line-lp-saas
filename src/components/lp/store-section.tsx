@@ -5,13 +5,14 @@ import { SectionHeading } from "./section-heading";
 
 type Props = {
   store: Store;
+  storeLabel?: string;
 };
 
-export function StoreSection({ store }: Props) {
+export function StoreSection({ store, storeLabel = "店舗情報" }: Props) {
   return (
     <section className="px-6 py-10 sm:px-8">
       <FadeUp>
-        <SectionHeading title="店舗情報" />
+        <SectionHeading title={storeLabel} />
         <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
           <p className="font-bold text-gray-900">{store.store_name}</p>
 

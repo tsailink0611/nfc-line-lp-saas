@@ -4,9 +4,10 @@ import { SectionHeading } from "./section-heading";
 
 type Props = {
   staff: StaffLpData;
+  specialtyLabel?: string;
 };
 
-export function SpecialtySection({ staff }: Props) {
+export function SpecialtySection({ staff, specialtyLabel = "得意分野" }: Props) {
   const hasBadges = staff.badges.length > 0;
   const hasText = !!staff.specialties_text;
 
@@ -15,7 +16,7 @@ export function SpecialtySection({ staff }: Props) {
   return (
     <section className="px-6 py-10 sm:px-8">
       <FadeUp>
-        <SectionHeading title="得意分野" />
+        <SectionHeading title={specialtyLabel} />
 
         {hasBadges && (
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">

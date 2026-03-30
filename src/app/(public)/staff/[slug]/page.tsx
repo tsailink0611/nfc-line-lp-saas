@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import type { Metadata } from "next";
 import type { StaffLpData } from "@/types/database";
 import { generateThemeVars } from "@/lib/theme";
+import { getIndustryTemplate } from "@/lib/industry-templates";
 import { HeroSection } from "@/components/lp/hero-section";
 import { ProfileSection } from "@/components/lp/profile-section";
 import { SpecialtySection } from "@/components/lp/specialty-section";
@@ -138,11 +139,10 @@ export default async function StaffLpPage({
     // トラッキング失敗はサイレントに無視
   }
 
-  const ctaLabel = data.lp_settings?.cta_label ?? "LINEで相談する";
-  const staffName =
-    data.display_name ?? `${data.last_name} ${data.first_name}`;
-  const themeVars = generateThemeVars(data.company, data.lp_settings);
   const industryType = data.lp_settings?.industry_type ?? "real_estate";
+  const template = getIndustryTemplate(industryType);
+  const ctaLabel = data.lp_settings?.cta_label ?? template.defaultCtaLabel;
+  const themeVars = generateThemeVars(data.company, data.lp_settings);
 
   return (
     <div
@@ -153,12 +153,12 @@ export default async function StaffLpPage({
       } as React.CSSProperties}
     >
       <div className="mx-auto max-w-2xl bg-white shadow-2xl lg:my-8 lg:rounded-2xl lg:overflow-hidden">
-        <HeroSection staff={data} />
+        <HeroSection staff={data} template={template} />
         <ProfileSection staff={data} />
-        <SpecialtySection staff={data} />
+        <SpecialtySection staff={data} specialtyLabel={template.specialtyLabel} />
         <CampaignSection campaigns={data.campaigns} />
         <GallerySection galleries={data.galleries} />
-        <StoreSection store={data.store} />
+        <StoreSection store={data.store} storeLabel={template.storeLabel} />
         <MapSection embedUrl={data.store.google_map_embed_url} />
         <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} />
         <FooterSection company={data.company} lpSettings={data.lp_settings} />

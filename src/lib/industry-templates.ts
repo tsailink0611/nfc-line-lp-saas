@@ -8,11 +8,19 @@ export type IndustryTemplate = {
   label: string;
   lineBenefits: LineBenefit[];
   nfcLabel: string;
+  specialtyLabel: string;
+  storeLabel: string;
+  defaultCatchCopy: string;
+  defaultCtaLabel: string;
 };
 
 const templates: Record<string, IndustryTemplate> = {
   real_estate: {
     label: "不動産・建築",
+    specialtyLabel: "得意分野",
+    storeLabel: "店舗情報",
+    defaultCatchCopy: "あなたの理想の住まいを一緒に探します",
+    defaultCtaLabel: "LINEでお部屋を相談する",
     lineBenefits: [
       {
         title: "新着物件情報",
@@ -39,6 +47,10 @@ const templates: Record<string, IndustryTemplate> = {
   },
   construction: {
     label: "建築・リフォーム",
+    specialtyLabel: "施工・対応エリア",
+    storeLabel: "事務所情報",
+    defaultCatchCopy: "理想の住まいを、確かな技術で形にします",
+    defaultCtaLabel: "LINEで無料相談する",
     lineBenefits: [
       {
         title: "施工事例",
@@ -64,7 +76,11 @@ const templates: Record<string, IndustryTemplate> = {
     nfcLabel: "タッチで担当者ページへ",
   },
   automotive: {
-    label: "自動車",
+    label: "自動車ディーラー",
+    specialtyLabel: "担当車種",
+    storeLabel: "販売店情報",
+    defaultCatchCopy: "理想の1台を、一緒に見つけましょう",
+    defaultCtaLabel: "試乗・商談のご予約はこちら",
     lineBenefits: [
       {
         title: "リコール・重要情報",
@@ -91,6 +107,10 @@ const templates: Record<string, IndustryTemplate> = {
   },
   general: {
     label: "汎用",
+    specialtyLabel: "得意分野",
+    storeLabel: "店舗情報",
+    defaultCatchCopy: "あなたのご要望に、丁寧にお応えします",
+    defaultCtaLabel: "LINEで相談する",
     lineBenefits: [
       {
         title: "最新情報",
