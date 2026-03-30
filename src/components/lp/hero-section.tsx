@@ -1,15 +1,17 @@
 import Image from "next/image";
 import type { StaffLpData } from "@/types/database";
 import { LineIcon } from "./line-icon";
+import type { IndustryTemplate } from "@/lib/industry-templates";
 
 type Props = {
   staff: StaffLpData;
+  template: IndustryTemplate;
 };
 
-export function HeroSection({ staff }: Props) {
-  const catchCopy = staff.lp_settings?.hero_catch ?? "あなたの理想を実現する";
+export function HeroSection({ staff, template }: Props) {
+  const catchCopy = staff.lp_settings?.hero_catch ?? template.defaultCatchCopy;
   const subCatch = staff.lp_settings?.hero_subcatch ?? "";
-  const ctaLabel = staff.lp_settings?.cta_label ?? "LINEで相談する";
+  const ctaLabel = staff.lp_settings?.cta_label ?? template.defaultCtaLabel;
   const displayName = staff.display_name ?? `${staff.last_name} ${staff.first_name}`;
   const hasEnName = staff.first_name_en || staff.last_name_en;
   const enName = hasEnName ? `${staff.first_name_en ?? ""} ${staff.last_name_en ?? ""}`.trim() : null;
