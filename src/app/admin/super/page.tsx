@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { getIndustryTemplate } from "@/lib/industry-templates";
+import { switchViewingCompany } from "./actions";
 
 export default async function SuperAdminPage() {
   const supabase = await createClient();
@@ -60,6 +61,7 @@ export default async function SuperAdminPage() {
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                 登録日
               </th>
+              <th className="px-6 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -108,6 +110,16 @@ export default async function SuperAdminPage() {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(company.created_at).toLocaleDateString("ja-JP")}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <form action={switchViewingCompany.bind(null, company.id)}>
+                      <button
+                        type="submit"
+                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                      >
+                        管理画面へ →
+                      </button>
+                    </form>
                   </td>
                 </tr>
               );

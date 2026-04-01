@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { companySchema } from "@/lib/validators/company";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { ActionState } from "@/app/admin/staff/actions";
 
 async function assertSuperAdmin() {
@@ -72,4 +73,21 @@ export async function createCompany(
 
   revalidatePath("/admin/super");
   redirect("/admin/super");
+}
+
+export async function switchViewingCompany(companyId: string) {
+  // super_admin のみ実行可能
+  try {
+    await assertSuperAdmin();
+  } catch {
+    redirect("/admin");
+  }
+
+  const cookieStore = await cookies();
+  cookieStore.set("super_viewing_company_id", companyId, {
+    httpOnly: true,
+    path: "/",
+    maxAge: 60 * 60 * 8, // 8時間
+  });
+  redirect("/admin");
 }

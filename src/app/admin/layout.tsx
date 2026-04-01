@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { cookies } from "next/headers";
 
 export default async function AdminLayout({
   children,
@@ -23,11 +24,27 @@ export default async function AdminLayout({
     .eq("auth_user_id", user.id)
     .single();
 
+  // super_admin が別会社を閲覧中の場合、その会社名を表示
+  const cookieStore = await cookies();
+  const viewingCompanyId = adminUser?.role === "super_admin"
+    ? cookieStore.get("super_viewing_company_id")?.value
+    : undefined;
+
+  let displayCompanyName = adminUser?.company?.company_name ?? "";
+  if (viewingCompanyId) {
+    const { data: viewingCompany } = await supabase
+      .from("companies")
+      .select("company_name")
+      .eq("id", viewingCompanyId)
+      .single();
+    if (viewingCompany) displayCompanyName = viewingCompany.company_name;
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar
         userName={adminUser?.name ?? "管理者"}
-        companyName={adminUser?.company?.company_name ?? ""}
+        companyName={displayCompanyName}
         role={adminUser?.role ?? "admin"}
       />
       <main className="flex-1 overflow-auto">
