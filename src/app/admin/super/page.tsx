@@ -17,9 +17,18 @@ export default async function SuperAdminPage() {
     .from("lp_settings")
     .select("company_id, industry_type");
 
+  const { data: adminUsers } = await supabase
+    .from("admin_users")
+    .select("company_id");
+
   const industryMap = new Map(
     (lpSettings ?? []).map((s) => [s.company_id, s.industry_type ?? "general"])
   );
+
+  const accountCountMap = new Map<string, number>();
+  for (const u of adminUsers ?? []) {
+    accountCountMap.set(u.company_id, (accountCountMap.get(u.company_id) ?? 0) + 1);
+  }
 
   return (
     <div>
@@ -54,6 +63,9 @@ export default async function SuperAdminPage() {
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                 テーマ
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                アカウント
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                 状態
@@ -96,6 +108,23 @@ export default async function SuperAdminPage() {
                         }}
                       />
                     </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {(() => {
+                      const count = accountCountMap.get(company.id) ?? 0;
+                      return (
+                        <Link
+                          href={`/admin/super/accounts/new?company_id=${company.id}`}
+                          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition hover:opacity-80 ${
+                            count > 0
+                              ? "bg-indigo-50 text-indigo-700"
+                              : "bg-gray-100 text-gray-400"
+                          }`}
+                        >
+                          {count > 0 ? `${count}名` : "未発行"}
+                        </Link>
+                      );
+                    })()}
                   </td>
                   <td className="px-6 py-4">
                     <span
