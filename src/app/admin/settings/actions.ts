@@ -45,6 +45,8 @@ export async function updateLpSettings(
     company_id: companyId,
     ...parsed.data,
     hero_background_url: parsed.data.hero_background_url || null,
+    webhook_url: parsed.data.webhook_url || null,
+    webhook_secret: parsed.data.webhook_secret || null,
   };
 
   // upsert

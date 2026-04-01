@@ -105,6 +105,42 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
         <p className="mt-1 text-xs text-gray-500">空欄の場合はグラデーション背景を使用します</p>
       </div>
 
+      {/* n8n webhook設定 */}
+      <div className="border-t border-gray-100 pt-6">
+        <h3 className="mb-4 text-sm font-semibold text-gray-700">n8n Webhook設定</h3>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="webhook_url">Webhook URL</Label>
+            <Input
+              id="webhook_url"
+              name="webhook_url"
+              type="url"
+              defaultValue={lpSettings?.webhook_url ?? ""}
+              placeholder="https://your-n8n.example.com/webhook/..."
+              error={fieldError("webhook_url")}
+              className="mt-1"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              NFCタップ時にこのURLへPOSTリクエストを送信します
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="webhook_secret">Webhook Secret（任意）</Label>
+            <Input
+              id="webhook_secret"
+              name="webhook_secret"
+              type="password"
+              defaultValue={lpSettings?.webhook_secret ?? ""}
+              placeholder="任意のシークレットキー"
+              className="mt-1"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              設定するとX-Webhook-SecretヘッダーにセットされてPOSTされます
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-end">
         <Button type="submit" disabled={pending}>{pending ? "保存中..." : "LP設定を保存"}</Button>
       </div>

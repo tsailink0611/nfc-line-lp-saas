@@ -108,6 +108,8 @@ export type LpSettings = {
   theme_type: string;
   industry_type: string | null;
   hero_background_url: string | null;
+  webhook_url: string | null;
+  webhook_secret: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -123,8 +125,11 @@ export type PageVisit = {
 export type NfcResolution = {
   id: string;
   nfc_token_id: string;
+  company_id: string | null;
+  event_type: string;
   resolved_at: string;
   user_agent: string | null;
+  metadata: Record<string, unknown> | null;
 };
 
 export type AdminUser = {

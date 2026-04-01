@@ -20,6 +20,12 @@ export const lpSettingsSchema = z.object({
     .url("有効なURLを入力してください")
     .optional()
     .or(z.literal("")),
+  webhook_url: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
+  webhook_secret: z.string().optional(),
 });
 
 export type CompanySettingsFormData = z.infer<typeof companySettingsSchema>;

@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { fireWebhook } from "@/lib/webhook";
+import type { WebhookPayload } from "@/lib/webhook";
 
 export async function GET(
   request: Request,
@@ -10,7 +12,7 @@ export async function GET(
 
   const { data: nfcToken } = await supabase
     .from("nfc_tokens")
-    .select("id, target_path, is_active")
+    .select("id, company_id, target_path, is_active")
     .eq("token", token)
     .single();
 
@@ -33,14 +35,43 @@ export async function GET(
     );
   }
 
-  // NFCスキャンをトラッキング（fire and forget: 失敗してもリダイレクトは行う）
+  const userAgent = request.headers.get("user-agent");
+
+  // NFCスキャンをトラッキング（fire and forget）
   supabase
     .from("nfc_resolutions")
     .insert({
       nfc_token_id: nfcToken.id,
-      user_agent: request.headers.get("user-agent"),
+      company_id: nfcToken.company_id,
+      event_type: "tag_tapped",
+      user_agent: userAgent,
     })
     .then(() => {});
+
+  // webhook設定を取得してn8nへ通知（fire and forget）
+  supabase
+    .from("lp_settings")
+    .select("webhook_url, webhook_secret")
+    .eq("company_id", nfcToken.company_id)
+    .single()
+    .then(({ data: lpSettings }) => {
+      if (!lpSettings?.webhook_url) return;
+
+      const payload: WebhookPayload = {
+        event_type: "tag_tapped",
+        timestamp: new Date().toISOString(),
+        company_id: nfcToken.company_id,
+        token,
+        target_path: nfcToken.target_path,
+        user_agent: userAgent,
+      };
+
+      fireWebhook({
+        url: lpSettings.webhook_url,
+        secret: lpSettings.webhook_secret,
+        payload,
+      });
+    });
 
   return NextResponse.redirect(
     new URL(nfcToken.target_path, process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"),
