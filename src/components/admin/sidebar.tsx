@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   BarChart2,
+  ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -31,9 +32,10 @@ const navItems = [
 type Props = {
   userName: string;
   companyName: string;
+  role?: string;
 };
 
-export function AdminSidebar({ userName, companyName }: Props) {
+export function AdminSidebar({ userName, companyName, role }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,7 +78,22 @@ export function AdminSidebar({ userName, companyName }: Props) {
         ))}
       </nav>
 
-      <div className="border-t border-gray-700 px-3 py-4">
+      <div className="border-t border-gray-700 px-3 py-4 space-y-1">
+        {role === "super_admin" && (
+          <Link
+            href="/admin/super"
+            onClick={() => setMobileOpen(false)}
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+              isActive("/admin/super")
+                ? "bg-indigo-600 text-white"
+                : "text-indigo-300 hover:bg-indigo-600/30 hover:text-indigo-100"
+            )}
+          >
+            <ShieldCheck className="h-5 w-5 shrink-0" />
+            全社管理
+          </Link>
+        )}
         <button
           onClick={handleLogout}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-700/50 hover:text-white"
@@ -85,6 +102,7 @@ export function AdminSidebar({ userName, companyName }: Props) {
           ログアウト
         </button>
       </div>
+
     </>
   );
 
