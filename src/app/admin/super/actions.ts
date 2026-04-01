@@ -128,6 +128,41 @@ export async function createAdminAccount(
   redirect(`/admin/super?created=1`);
 }
 
+export async function toggleAdminAccount(
+  accountId: string,
+  isActive: boolean
+): Promise<{ error?: string }> {
+  try {
+    await assertSuperAdmin();
+  } catch {
+    return { error: "権限がありません" };
+  }
+
+  const adminClient = createAdminClient();
+
+  const { error } = await adminClient
+    .from("admin_users")
+    .update({ is_active: !isActive })
+    .eq("id", accountId);
+
+  if (error) return { error: "更新に失敗しました" };
+
+  // Supabase Auth 側も同期（無効化の場合はセッションを削除）
+  if (isActive) {
+    const { data: account } = await adminClient
+      .from("admin_users")
+      .select("auth_user_id")
+      .eq("id", accountId)
+      .single();
+    if (account?.auth_user_id) {
+      await adminClient.auth.admin.signOut(account.auth_user_id, "global");
+    }
+  }
+
+  revalidatePath("/admin/super");
+  return {};
+}
+
 export async function switchViewingCompany(companyId: string) {
   // super_admin のみ実行可能
   try {

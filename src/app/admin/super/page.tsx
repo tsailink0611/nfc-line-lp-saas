@@ -30,6 +30,24 @@ export default async function SuperAdminPage() {
     accountCountMap.set(u.company_id, (accountCountMap.get(u.company_id) ?? 0) + 1);
   }
 
+  const { data: staffList } = await supabase
+    .from("staff")
+    .select("company_id");
+
+  const { data: storeList } = await supabase
+    .from("stores")
+    .select("company_id");
+
+  const staffCountMap = new Map<string, number>();
+  for (const s of staffList ?? []) {
+    staffCountMap.set(s.company_id, (staffCountMap.get(s.company_id) ?? 0) + 1);
+  }
+
+  const storeCountMap = new Map<string, number>();
+  for (const s of storeList ?? []) {
+    storeCountMap.set(s.company_id, (storeCountMap.get(s.company_id) ?? 0) + 1);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -63,6 +81,9 @@ export default async function SuperAdminPage() {
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                 テーマ
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                担当者 / 店舗
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                 アカウント
@@ -110,11 +131,18 @@ export default async function SuperAdminPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <span>{staffCountMap.get(company.id) ?? 0}名</span>
+                      <span className="text-gray-300">/</span>
+                      <span>{storeCountMap.get(company.id) ?? 0}店舗</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
                     {(() => {
                       const count = accountCountMap.get(company.id) ?? 0;
                       return (
                         <Link
-                          href={`/admin/super/accounts/new?company_id=${company.id}`}
+                          href={`/admin/super/companies/${company.id}/accounts`}
                           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition hover:opacity-80 ${
                             count > 0
                               ? "bg-indigo-50 text-indigo-700"
@@ -164,7 +192,7 @@ export default async function SuperAdminPage() {
             {(companies ?? []).length === 0 && (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   className="px-6 py-12 text-center text-sm text-gray-400"
                 >
                   登録されている会社がありません
