@@ -28,6 +28,7 @@ export default async function AdminLayout({
       <AdminSidebar
         userName={adminUser?.name ?? "管理者"}
         companyName={adminUser?.company?.company_name ?? ""}
+        role={adminUser?.role ?? "admin"}
       />
       <main className="flex-1 overflow-auto">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
