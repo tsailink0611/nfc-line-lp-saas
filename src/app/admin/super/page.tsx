@@ -112,14 +112,22 @@ export default async function SuperAdminPage() {
                     {new Date(company.created_at).toLocaleDateString("ja-JP")}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <form action={switchViewingCompany.bind(null, company.id)}>
-                      <button
-                        type="submit"
-                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/admin/super/accounts/new?company_id=${company.id}`}
+                        className="rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 transition hover:bg-indigo-100"
                       >
-                        管理画面へ →
-                      </button>
-                    </form>
+                        + アカウント発行
+                      </Link>
+                      <form action={switchViewingCompany.bind(null, company.id)}>
+                        <button
+                          type="submit"
+                          className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                        >
+                          管理画面へ →
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               );

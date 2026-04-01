@@ -1,7 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { companySchema } from "@/lib/validators/company";
+import { adminAccountSchema } from "@/lib/validators/admin-account";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -73,6 +75,57 @@ export async function createCompany(
 
   revalidatePath("/admin/super");
   redirect("/admin/super");
+}
+
+export async function createAdminAccount(
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    await assertSuperAdmin();
+  } catch {
+    return { error: "権限がありません" };
+  }
+
+  const raw = Object.fromEntries(formData);
+  const parsed = adminAccountSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+
+  const adminClient = createAdminClient();
+
+  // Supabase Auth にユーザーを作成
+  const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+    email: parsed.data.email,
+    password: parsed.data.password,
+    email_confirm: true,
+  });
+
+  if (authError) {
+    if (authError.message.includes("already registered"))
+      return { error: "このメールアドレスは既に使用されています" };
+    return { error: `アカウント作成に失敗しました: ${authError.message}` };
+  }
+
+  // admin_users テーブルにレコードを作成
+  const { error: dbError } = await adminClient.from("admin_users").insert({
+    auth_user_id: authData.user.id,
+    company_id: parsed.data.company_id,
+    name: parsed.data.name,
+    email: parsed.data.email,
+    role: "admin",
+    is_active: true,
+  });
+
+  if (dbError) {
+    // Auth ユーザーをロールバック
+    await adminClient.auth.admin.deleteUser(authData.user.id);
+    return { error: "管理者情報の保存に失敗しました" };
+  }
+
+  revalidatePath("/admin/super");
+  redirect(`/admin/super?created=1`);
 }
 
 export async function switchViewingCompany(companyId: string) {
