@@ -2,10 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, ExternalLink } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
+import { StaffLpUrlCell } from "@/components/admin/staff-lp-url-cell";
 
 export default async function StaffListPage() {
   const supabase = await createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
   const { data: staffList } = await supabase
     .from("staff_members")
@@ -46,8 +48,8 @@ export default async function StaffListPage() {
               <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-500">
                 操作
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-500">
-                LP
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                LP URL
               </th>
             </tr>
           </thead>
@@ -79,14 +81,12 @@ export default async function StaffListPage() {
                       </Button>
                     </Link>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right">
-                    {staff.is_public && (
-                      <a href={`/staff/${staff.slug}`} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="sm" title="LPを新しいタブで開く">
-                          <ExternalLink className="h-4 w-4 text-blue-500" />
-                        </Button>
-                      </a>
-                    )}
+                  <td className="px-6 py-4">
+                    <StaffLpUrlCell
+                      slug={staff.slug}
+                      isPublic={staff.is_public}
+                      siteUrl={siteUrl}
+                    />
                   </td>
                 </tr>
               ))
