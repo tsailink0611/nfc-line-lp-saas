@@ -32,6 +32,10 @@ yarn-error.log*
 .env
 .env*.local
 
+# MCP設定（tokenを含む場合はコミット禁止）
+# .mcp.json は token を環境変数参照にしているためコミット可
+# token自体は .env.local に記載すること（下記参照）
+
 # vercel
 .vercel
 
