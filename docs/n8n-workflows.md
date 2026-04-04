@@ -41,23 +41,26 @@
 
 ## Supabase 会社ID一覧
 
+<!-- 本番company_idは公開リポジトリに記載しない。super admin画面またはSupabaseダッシュボードで確認 -->
+
 | 会社名 | company_id | webhook_url設定状況 |
 |---|---|---|
-| デモ不動産株式会社 | `a0000000-0000-0000-0000-000000000001` | `/webhook/nfc-event`（ベース） |
-| トヨタカローラデモ東京 | `5584b283-7a84-41ab-83b0-81abc99cf8ef` | 未設定 |
+| （super admin画面で確認） | - | - |
 
 ---
 
 ## n8n 環境情報
 
+<!-- 実際の値は .env.local または運用チーム内ドキュメントを参照 -->
+
 | 項目 | 値 |
 |---|---|
-| URL | `http://100.74.224.93:5678` |
+| URL | `http://<N8N_HOST>:5678`（Tailscale内部IP。.env.local参照） |
 | 設定ファイル | `/opt/n8n/.env` |
 | docker-compose | `/opt/n8n/docker-compose.yml` |
-| Google Sheets ID | `1rjW72n0Pl8w5b-bpQ0NKqQ9nSTA3KMNbrMshwwyGPP8` |
+| Google Sheets ID | （運用ドキュメント参照） |
 | Sheetsシート | `raw_events` / `notification_log` / `daily_summary` |
-| Sheets credential ID | `NTRSBQUHMy0X7Vhg` |
+| Sheets credential ID | （n8n管理画面参照） |
 
 ---
 
