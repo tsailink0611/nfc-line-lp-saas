@@ -31,7 +31,7 @@ export default async function SuperAdminPage() {
   }
 
   const { data: staffList } = await supabase
-    .from("staff")
+    .from("staff_members")
     .select("company_id");
 
   const { data: storeList } = await supabase

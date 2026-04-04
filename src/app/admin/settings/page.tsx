@@ -1,20 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import { SettingsCompanyForm } from "@/components/admin/settings-company-form";
 import { SettingsLpForm } from "@/components/admin/settings-lp-form";
 
 export default async function SettingsPage() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
 
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("company_id")
-    .single();
-
-  if (!adminUser) return <p>権限がありません</p>;
-
   const [{ data: company }, { data: lpSettings }] = await Promise.all([
-    supabase.from("companies").select("*").eq("id", adminUser.company_id).single(),
-    supabase.from("lp_settings").select("*").eq("company_id", adminUser.company_id).single(),
+    supabase.from("companies").select("*").eq("id", ctx.companyId).single(),
+    supabase.from("lp_settings").select("*").eq("company_id", ctx.companyId).single(),
   ]);
 
   return (
@@ -28,7 +25,7 @@ export default async function SettingsPage() {
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold text-gray-900">LP設定</h2>
-        <SettingsLpForm companyId={adminUser.company_id} lpSettings={lpSettings} />
+        <SettingsLpForm companyId={ctx.companyId} lpSettings={lpSettings} />
       </div>
     </div>
   );

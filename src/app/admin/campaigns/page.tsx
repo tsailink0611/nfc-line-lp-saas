@@ -1,14 +1,19 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil } from "lucide-react";
 
 export default async function CampaignsListPage() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
   const { data: campaigns } = await supabase
     .from("campaigns")
     .select("*, store:stores(store_name)")
+    .eq("company_id", ctx.companyId)
     .order("sort_order");
 
   return (

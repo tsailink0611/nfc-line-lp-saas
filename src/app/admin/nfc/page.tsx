@@ -1,18 +1,24 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import { NfcCreateForm } from "@/components/admin/nfc-create-form";
 import { NfcTokenRow } from "@/components/admin/nfc-token-row";
 
 export default async function NfcManagementPage() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
 
   const [{ data: tokens }, { data: staffList }] = await Promise.all([
     supabase
       .from("nfc_tokens")
       .select("*, staff_member:staff_members(last_name, first_name, slug)")
+      .eq("company_id", ctx.companyId)
       .order("created_at", { ascending: false }),
     supabase
       .from("staff_members")
       .select("id, last_name, first_name")
+      .eq("company_id", ctx.companyId)
       .order("sort_order"),
   ]);
 

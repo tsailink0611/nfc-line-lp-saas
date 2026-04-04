@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,12 +8,15 @@ import { Plus, Pencil } from "lucide-react";
 import { StaffLpUrlCell } from "@/components/admin/staff-lp-url-cell";
 
 export default async function StaffListPage() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
   const { data: staffList } = await supabase
     .from("staff_members")
     .select("*, store:stores(store_name)")
+    .eq("company_id", ctx.companyId)
     .order("sort_order", { ascending: true });
 
   return (

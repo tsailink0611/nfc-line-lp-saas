@@ -117,9 +117,12 @@ export type LpSettings = {
 export type PageVisit = {
   id: string;
   staff_member_id: string;
+  company_id: string | null;
+  event_type: string;
   visited_at: string;
   user_agent: string | null;
   referrer: string | null;
+  metadata: Record<string, unknown> | null;
 };
 
 export type NfcResolution = {

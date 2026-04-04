@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createStaticClient } from "@/lib/supabase/static";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
 import type { Metadata } from "next";
 import type { StaffLpData } from "@/types/database";
 import { generateThemeVars } from "@/lib/theme";
@@ -16,6 +15,7 @@ import { MapSection } from "@/components/lp/map-section";
 import { LineBenefitsSection } from "@/components/lp/line-benefits";
 import { FooterSection } from "@/components/lp/footer-section";
 import { FloatingCta } from "@/components/lp/floating-cta";
+import { PageTracker } from "@/components/lp/page-tracker";
 
 // ISR: 60秒キャッシュ
 export const revalidate = 60;
@@ -126,19 +126,6 @@ export default async function StaffLpPage({
 
   if (!data) notFound();
 
-  // ページ訪問をトラッキング（ISR: キャッシュ中は実行されないが best-effort で記録）
-  try {
-    const headersList = await headers();
-    const supabase = await createClient();
-    await supabase.from("page_visits").insert({
-      staff_member_id: data.id,
-      user_agent: headersList.get("user-agent"),
-      referrer: headersList.get("referer"),
-    });
-  } catch {
-    // トラッキング失敗はサイレントに無視
-  }
-
   const industryType = data.lp_settings?.industry_type ?? "real_estate";
   const template = getIndustryTemplate(industryType);
   const ctaLabel = data.lp_settings?.cta_label ?? template.defaultCtaLabel;
@@ -163,6 +150,7 @@ export default async function StaffLpPage({
         <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} />
         <FooterSection company={data.company} lpSettings={data.lp_settings} />
         <FloatingCta lineUrl={data.staff_line_url} ctaLabel={ctaLabel} />
+        <PageTracker staffMemberId={data.id} />
       </div>
     </div>
   );

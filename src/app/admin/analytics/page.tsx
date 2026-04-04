@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import { StatsCard } from "@/components/admin/stats-card";
 import { BarChart2, Users, Smartphone, TrendingUp, type LucideIcon } from "lucide-react";
 
@@ -11,12 +13,21 @@ type StaffRankRow = {
 };
 
 export default async function AnalyticsPage() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  // 対象会社のスタッフIDリストを取得し、page_visitsをフィルタ
+  const { data: companyStaff } = await supabase
+    .from("staff_members")
+    .select("id")
+    .eq("company_id", ctx.companyId);
+  const staffIds = (companyStaff ?? []).map((s) => s.id);
 
   // 各種集計クエリを並列実行
   const [
@@ -30,23 +41,28 @@ export default async function AnalyticsPage() {
     supabase
       .from("page_visits")
       .select("*", { count: "exact", head: true })
+      .in("staff_member_id", staffIds.length > 0 ? staffIds : ["00000000-0000-0000-0000-000000000000"])
       .gte("visited_at", todayStart),
     supabase
       .from("page_visits")
       .select("*", { count: "exact", head: true })
+      .in("staff_member_id", staffIds.length > 0 ? staffIds : ["00000000-0000-0000-0000-000000000000"])
       .gte("visited_at", weekStart),
     supabase
       .from("page_visits")
       .select("*", { count: "exact", head: true })
+      .in("staff_member_id", staffIds.length > 0 ? staffIds : ["00000000-0000-0000-0000-000000000000"])
       .gte("visited_at", monthStart),
     supabase
       .from("nfc_resolutions")
       .select("*", { count: "exact", head: true })
+      .eq("company_id", ctx.companyId)
       .gte("resolved_at", monthStart),
     supabase.rpc("get_staff_visit_ranking", { since: monthStart }),
     supabase
       .from("page_visits")
       .select("visited_at")
+      .in("staff_member_id", staffIds.length > 0 ? staffIds : ["00000000-0000-0000-0000-000000000000"])
       .gte("visited_at", weekStart)
       .order("visited_at", { ascending: true }),
   ]);

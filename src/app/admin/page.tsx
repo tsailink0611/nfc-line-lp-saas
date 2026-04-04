@@ -1,8 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
+import { redirect } from "next/navigation";
 import { StatsCard } from "@/components/admin/stats-card";
 import { Users, UserCheck, Store, Megaphone } from "lucide-react";
 
 export default async function AdminDashboard() {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) redirect("/admin/login");
   const supabase = await createClient();
 
   const [
@@ -11,19 +15,21 @@ export default async function AdminDashboard() {
     { count: storeCount },
     { count: campaignCount },
   ] = await Promise.all([
-    supabase.from("staff_members").select("*", { count: "exact", head: true }),
+    supabase.from("staff_members").select("*", { count: "exact", head: true }).eq("company_id", ctx.companyId),
     supabase
       .from("staff_members")
       .select("*", { count: "exact", head: true })
+      .eq("company_id", ctx.companyId)
       .eq("is_public", true),
-    supabase.from("stores").select("*", { count: "exact", head: true }),
-    supabase.from("campaigns").select("*", { count: "exact", head: true }),
+    supabase.from("stores").select("*", { count: "exact", head: true }).eq("company_id", ctx.companyId),
+    supabase.from("campaigns").select("*", { count: "exact", head: true }).eq("company_id", ctx.companyId),
   ]);
 
   // 最新更新一覧
   const { data: recentStaff } = await supabase
     .from("staff_members")
     .select("id, last_name, first_name, updated_at")
+    .eq("company_id", ctx.companyId)
     .order("updated_at", { ascending: false })
     .limit(5);
 
