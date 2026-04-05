@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import type { Store } from "@/types/database";
 import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/admin/staff/actions";
@@ -17,15 +19,11 @@ export function StoreForm({ store, action }: Props) {
   const [state, formAction, pending] = useActionState(action, {});
   const [isActive, setIsActive] = useState(store?.is_active ?? true);
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="is_active" value={String(isActive)} />
 
-      {state.error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{state.error}</div>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
@@ -34,7 +32,7 @@ export function StoreForm({ store, action }: Props) {
             id="store_code"
             name="store_code"
             defaultValue={store?.store_code}
-            error={fieldError("store_code")}
+            error={fieldError(state.fieldErrors, "store_code")}
             className="mt-1"
           />
         </div>
@@ -44,7 +42,7 @@ export function StoreForm({ store, action }: Props) {
             id="store_name"
             name="store_name"
             defaultValue={store?.store_name}
-            error={fieldError("store_name")}
+            error={fieldError(state.fieldErrors, "store_name")}
             className="mt-1"
           />
         </div>
@@ -109,7 +107,7 @@ export function StoreForm({ store, action }: Props) {
           id="google_map_embed_url"
           name="google_map_embed_url"
           defaultValue={store?.google_map_embed_url ?? ""}
-          error={fieldError("google_map_embed_url")}
+          error={fieldError(state.fieldErrors, "google_map_embed_url")}
           rows={2}
           className="mt-1"
         />

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import type { ActionState } from "@/app/admin/staff/actions";
 import type { createCompany } from "@/app/admin/super/actions";
 
@@ -22,13 +24,9 @@ const INDUSTRY_OPTIONS = [
 export function SuperCompanyForm({ action }: Props) {
   const [state, dispatch, pending] = useActionState<ActionState, FormData>(action, {});
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={dispatch} className="space-y-5">
-      {state.error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</p>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div>
@@ -37,7 +35,7 @@ export function SuperCompanyForm({ action }: Props) {
             id="company_name"
             name="company_name"
             placeholder="株式会社〇〇"
-            error={fieldError("company_name")}
+            error={fieldError(state.fieldErrors, "company_name")}
             className="mt-1"
           />
         </div>
@@ -48,7 +46,7 @@ export function SuperCompanyForm({ action }: Props) {
             id="company_code"
             name="company_code"
             placeholder="TOYOTA-DEMO"
-            error={fieldError("company_code")}
+            error={fieldError(state.fieldErrors, "company_code")}
             className="mt-1"
           />
           <p className="mt-1 text-xs text-gray-500">登録後の変更はできません</p>
@@ -72,7 +70,7 @@ export function SuperCompanyForm({ action }: Props) {
           name="industry_type"
           className="mt-1"
           defaultValue="general"
-          error={fieldError("industry_type")}
+          error={fieldError(state.fieldErrors, "industry_type")}
         >
           {INDUSTRY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>

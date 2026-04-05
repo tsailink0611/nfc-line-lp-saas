@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import { updateLpSettings } from "@/app/admin/settings/actions";
 import type { LpSettings } from "@/types/database";
 import { useActionState } from "react";
@@ -19,13 +21,9 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
   const boundAction = updateLpSettings.bind(null, companyId);
   const [state, formAction, pending] = useActionState(boundAction, {} as ActionState);
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={formAction} className="space-y-6">
-      {state.error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{state.error}</div>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div>
         <Label htmlFor="hero_catch">ヒーローキャッチコピー</Label>
@@ -55,7 +53,7 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
           id="cta_label"
           name="cta_label"
           defaultValue={lpSettings?.cta_label ?? "LINEで相談する"}
-          error={fieldError("cta_label")}
+          error={fieldError(state.fieldErrors, "cta_label")}
           className="mt-1"
         />
       </div>
@@ -99,7 +97,7 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
           type="url"
           defaultValue={lpSettings?.hero_background_url ?? ""}
           placeholder="https://..."
-          error={fieldError("hero_background_url")}
+          error={fieldError(state.fieldErrors, "hero_background_url")}
           className="mt-1"
         />
         <p className="mt-1 text-xs text-gray-500">空欄の場合はグラデーション背景を使用します</p>
@@ -117,7 +115,7 @@ export function SettingsLpForm({ companyId, lpSettings }: Props) {
               type="url"
               defaultValue={lpSettings?.webhook_url ?? ""}
               placeholder="https://your-n8n.example.com/webhook/..."
-              error={fieldError("webhook_url")}
+              error={fieldError(state.fieldErrors, "webhook_url")}
               className="mt-1"
             />
             <p className="mt-1 text-xs text-gray-500">

@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import type { StaffMember, Store } from "@/types/database";
 import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/admin/staff/actions";
@@ -22,20 +24,13 @@ export function StaffForm({ stores, staff, action }: Props) {
   const [subImage, setSubImage] = useState(staff?.sub_image_url ?? "");
   const [isPublic, setIsPublic] = useState(staff?.is_public ?? false);
 
-  const fieldError = (name: string) =>
-    state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="main_image_url" value={mainImage} />
       <input type="hidden" name="sub_image_url" value={subImage} />
       <input type="hidden" name="is_public" value={String(isPublic)} />
 
-      {state.error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-          {state.error}
-        </div>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
@@ -44,7 +39,7 @@ export function StaffForm({ stores, staff, action }: Props) {
             id="last_name"
             name="last_name"
             defaultValue={staff?.last_name}
-            error={fieldError("last_name")}
+            error={fieldError(state.fieldErrors, "last_name")}
             className="mt-1"
           />
         </div>
@@ -54,7 +49,7 @@ export function StaffForm({ stores, staff, action }: Props) {
             id="first_name"
             name="first_name"
             defaultValue={staff?.first_name}
-            error={fieldError("first_name")}
+            error={fieldError(state.fieldErrors, "first_name")}
             className="mt-1"
           />
         </div>
@@ -98,7 +93,7 @@ export function StaffForm({ stores, staff, action }: Props) {
           name="slug"
           defaultValue={staff?.slug}
           placeholder="tanaka-taro"
-          error={fieldError("slug")}
+          error={fieldError(state.fieldErrors, "slug")}
           className="mt-1"
         />
         <p className="mt-1 text-xs text-gray-500">英小文字・数字・ハイフンのみ</p>
@@ -110,7 +105,7 @@ export function StaffForm({ stores, staff, action }: Props) {
           id="store_id"
           name="store_id"
           defaultValue={staff?.store_id}
-          error={fieldError("store_id")}
+          error={fieldError(state.fieldErrors, "store_id")}
           className="mt-1"
         >
           <option value="">選択してください</option>
@@ -197,7 +192,7 @@ export function StaffForm({ stores, staff, action }: Props) {
           name="staff_line_url"
           defaultValue={staff?.staff_line_url ?? ""}
           placeholder="https://line.me/ti/p/..."
-          error={fieldError("staff_line_url")}
+          error={fieldError(state.fieldErrors, "staff_line_url")}
           className="mt-1"
         />
       </div>
@@ -218,7 +213,7 @@ export function StaffForm({ stores, staff, action }: Props) {
           id="youtube_url"
           name="youtube_url"
           defaultValue={staff?.youtube_url ?? ""}
-          error={fieldError("youtube_url")}
+          error={fieldError(state.fieldErrors, "youtube_url")}
           className="mt-1"
         />
       </div>
@@ -231,7 +226,7 @@ export function StaffForm({ stores, staff, action }: Props) {
           type="url"
           defaultValue={staff?.booking_url ?? ""}
           placeholder="https://calendar.google.com/calendar/appointments/..."
-          error={fieldError("booking_url")}
+          error={fieldError(state.fieldErrors, "booking_url")}
           className="mt-1"
         />
         <p className="mt-1 text-xs text-gray-500">

@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import type { Campaign, Store } from "@/types/database";
 import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/admin/staff/actions";
@@ -21,20 +23,16 @@ export function CampaignForm({ stores, campaign, action }: Props) {
   const [imageUrl, setImageUrl] = useState(campaign?.image_url ?? "");
   const [isPublic, setIsPublic] = useState(campaign?.is_public ?? false);
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="image_url" value={imageUrl} />
       <input type="hidden" name="is_public" value={String(isPublic)} />
 
-      {state.error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{state.error}</div>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div>
         <Label htmlFor="title" required>タイトル</Label>
-        <Input id="title" name="title" defaultValue={campaign?.title} error={fieldError("title")} className="mt-1" />
+        <Input id="title" name="title" defaultValue={campaign?.title} error={fieldError(state.fieldErrors, "title")} className="mt-1" />
       </div>
 
       <div>
@@ -55,7 +53,7 @@ export function CampaignForm({ stores, campaign, action }: Props) {
 
       <div>
         <Label htmlFor="link_url">リンク先URL</Label>
-        <Input id="link_url" name="link_url" defaultValue={campaign?.link_url ?? ""} error={fieldError("link_url")} className="mt-1" />
+        <Input id="link_url" name="link_url" defaultValue={campaign?.link_url ?? ""} error={fieldError(state.fieldErrors, "link_url")} className="mt-1" />
       </div>
 
       <div>

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import { updateCompanySettings } from "@/app/admin/settings/actions";
 import type { Company } from "@/types/database";
 import { useActionState, useState } from "react";
@@ -19,20 +21,16 @@ export function SettingsCompanyForm({ company }: Props) {
   const [state, formAction, pending] = useActionState(boundAction, {} as ActionState);
   const [logoUrl, setLogoUrl] = useState(company?.logo_url ?? "");
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="logo_url" value={logoUrl} />
 
-      {state.error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{state.error}</div>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <Label htmlFor="company_name" required>会社名</Label>
-          <Input id="company_name" name="company_name" defaultValue={company?.company_name} error={fieldError("company_name")} className="mt-1" />
+          <Input id="company_name" name="company_name" defaultValue={company?.company_name} error={fieldError(state.fieldErrors, "company_name")} className="mt-1" />
         </div>
         <div>
           <Label htmlFor="company_name_en">会社名（英語）</Label>
@@ -56,7 +54,7 @@ export function SettingsCompanyForm({ company }: Props) {
           <Label htmlFor="primary_color" required>メインカラー</Label>
           <div className="mt-1 flex items-center gap-2">
             <input type="color" name="primary_color" defaultValue={company?.primary_color ?? "#1a1a2e"} className="h-10 w-10 cursor-pointer rounded border" />
-            <Input name="primary_color" defaultValue={company?.primary_color ?? "#1a1a2e"} error={fieldError("primary_color")} className="flex-1" readOnly />
+            <Input name="primary_color" defaultValue={company?.primary_color ?? "#1a1a2e"} error={fieldError(state.fieldErrors, "primary_color")} className="flex-1" readOnly />
           </div>
         </div>
         <div>

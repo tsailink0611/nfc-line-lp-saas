@@ -4,6 +4,8 @@ import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/admin/error-alert";
+import { fieldError } from "@/lib/form-utils";
 import type { ActionState } from "@/app/admin/staff/actions";
 import type { createAdminAccount } from "@/app/admin/super/actions";
 
@@ -16,15 +18,11 @@ type Props = {
 export function SuperAccountForm({ companyId, companyName, action }: Props) {
   const [state, dispatch, pending] = useActionState<ActionState, FormData>(action, {});
 
-  const fieldError = (name: string) => state.fieldErrors?.[name]?.[0];
-
   return (
     <form action={dispatch} className="space-y-5">
       <input type="hidden" name="company_id" value={companyId} />
 
-      {state.error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</p>
-      )}
+      <ErrorAlert message={state.error} />
 
       <div className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-700">
         発行先: <span className="font-semibold">{companyName}</span>
@@ -36,7 +34,7 @@ export function SuperAccountForm({ companyId, companyName, action }: Props) {
           id="name"
           name="name"
           placeholder="山田 太郎"
-          error={fieldError("name")}
+          error={fieldError(state.fieldErrors, "name")}
           className="mt-1"
         />
       </div>
@@ -48,7 +46,7 @@ export function SuperAccountForm({ companyId, companyName, action }: Props) {
           name="email"
           type="email"
           placeholder="admin@example.com"
-          error={fieldError("email")}
+          error={fieldError(state.fieldErrors, "email")}
           className="mt-1"
         />
       </div>
@@ -60,7 +58,7 @@ export function SuperAccountForm({ companyId, companyName, action }: Props) {
           name="password"
           type="text"
           placeholder="Abc12345"
-          error={fieldError("password")}
+          error={fieldError(state.fieldErrors, "password")}
           className="mt-1 font-mono"
         />
         <p className="mt-1 text-xs text-gray-500">8文字以上・大文字1文字以上・数字1文字以上</p>
