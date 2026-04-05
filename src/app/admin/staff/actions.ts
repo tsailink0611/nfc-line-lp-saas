@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
 import { staffSchema } from "@/lib/validators/staff";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -14,14 +15,10 @@ export async function createStaff(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
+  const companyId = ctx.companyId;
   const supabase = await createClient();
-
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("company_id")
-    .single();
-
-  if (!adminUser) return { error: "権限がありません" };
 
   const raw = Object.fromEntries(formData);
   const parsed = staffSchema.safeParse({
@@ -35,7 +32,7 @@ export async function createStaff(
   }
 
   const { error } = await supabase.from("staff_members").insert({
-    company_id: adminUser.company_id,
+    company_id: companyId,
     ...parsed.data,
     main_image_url: formData.get("main_image_url") as string || null,
     sub_image_url: formData.get("sub_image_url") as string || null,
@@ -55,6 +52,8 @@ export async function updateStaff(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
 
   const raw = Object.fromEntries(formData);
@@ -88,6 +87,8 @@ export async function updateStaff(
 }
 
 export async function deleteStaff(id: string): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
 
   const { error } = await supabase.from("staff_members").delete().eq("id", id);

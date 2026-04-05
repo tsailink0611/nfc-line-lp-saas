@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
 import { nfcTokenSchema } from "@/lib/validators/nfc";
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/app/admin/staff/actions";
@@ -9,12 +10,10 @@ export async function createNfcToken(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
+  const companyId = ctx.companyId;
   const supabase = await createClient();
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("company_id")
-    .single();
-  if (!adminUser) return { error: "権限がありません" };
 
   const raw = Object.fromEntries(formData);
   const parsed = nfcTokenSchema.safeParse(raw);
@@ -32,7 +31,7 @@ export async function createNfcToken(
   const token = crypto.randomUUID();
 
   const { error } = await supabase.from("nfc_tokens").insert({
-    company_id: adminUser.company_id,
+    company_id: companyId,
     staff_member_id: parsed.data.staff_member_id,
     token,
     target_path: `/staff/${staff.slug}`,

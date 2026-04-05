@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { companySchema } from "@/lib/validators/company";
 import { adminAccountSchema } from "@/lib/validators/admin-account";
@@ -10,33 +11,24 @@ import { cookies } from "next/headers";
 import type { ActionState } from "@/app/admin/staff/actions";
 
 async function assertSuperAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("未認証");
-
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("role")
-    .eq("auth_user_id", user.id)
-    .single();
-  if (!adminUser || adminUser.role !== "super_admin") {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx || ctx.adminUser.role !== "super_admin") {
     throw new Error("権限がありません");
   }
-  return supabase;
+  return ctx;
 }
 
 export async function createCompany(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  let supabase;
   try {
-    supabase = await assertSuperAdmin();
+    await assertSuperAdmin();
   } catch {
     return { error: "権限がありません" };
   }
+
+  const supabase = await createClient();
 
   const raw = Object.fromEntries(formData);
   const parsed = companySchema.safeParse(raw);

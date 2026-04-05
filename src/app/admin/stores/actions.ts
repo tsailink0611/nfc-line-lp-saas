@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAdminContext } from "@/lib/admin-context";
 import { storeSchema } from "@/lib/validators/store";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -10,14 +11,10 @@ export async function createStore(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
+  const companyId = ctx.companyId;
   const supabase = await createClient();
-
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("company_id")
-    .single();
-
-  if (!adminUser) return { error: "権限がありません" };
 
   const raw = Object.fromEntries(formData);
   const parsed = storeSchema.safeParse({
@@ -30,7 +27,7 @@ export async function createStore(
   }
 
   const { error } = await supabase.from("stores").insert({
-    company_id: adminUser.company_id,
+    company_id: companyId,
     ...parsed.data,
   });
 
@@ -48,6 +45,8 @@ export async function updateStore(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
 
   const raw = Object.fromEntries(formData);
@@ -72,6 +71,8 @@ export async function updateStore(
 }
 
 export async function deleteStore(id: string): Promise<ActionState> {
+  const ctx = await getCurrentAdminContext();
+  if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
   const { error } = await supabase.from("stores").delete().eq("id", id);
   if (error) return { error: "店舗の削除に失敗しました" };
