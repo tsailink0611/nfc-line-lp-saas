@@ -10,12 +10,12 @@ import { ErrorAlert } from "@/components/admin/error-alert";
 import { fieldError } from "@/lib/form-utils";
 import type { StaffMember, Store } from "@/types/database";
 import { useActionState, useState } from "react";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 type Props = {
   stores: Store[];
   staff?: StaffMember | null;
-  action: (prev: ActionState, formData: FormData) => Promise<ActionState>;
+  action: (prev: ActionResult, formData: FormData) => Promise<ActionResult>;
 };
 
 export function StaffForm({ stores, staff, action }: Props) {

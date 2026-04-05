@@ -4,12 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentAdminContext } from "@/lib/admin-context";
 import { nfcTokenSchema } from "@/lib/validators/nfc";
 import { revalidatePath } from "next/cache";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 export async function createNfcToken(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const companyId = ctx.companyId;
@@ -50,7 +50,7 @@ export async function toggleNfcToken(id: string, isActive: boolean) {
   revalidatePath("/admin/nfc");
 }
 
-export async function deleteNfcToken(id: string): Promise<ActionState> {
+export async function deleteNfcToken(id: string): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.from("nfc_tokens").delete().eq("id", id);
   if (error) return { error: "NFCトークンの削除に失敗しました" };

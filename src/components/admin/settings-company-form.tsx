@@ -10,7 +10,7 @@ import { fieldError } from "@/lib/form-utils";
 import { updateCompanySettings } from "@/app/admin/settings/actions";
 import type { Company } from "@/types/database";
 import { useActionState, useState } from "react";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 type Props = {
   company: Company | null;
@@ -18,7 +18,7 @@ type Props = {
 
 export function SettingsCompanyForm({ company }: Props) {
   const boundAction = updateCompanySettings.bind(null, company?.id ?? "");
-  const [state, formAction, pending] = useActionState(boundAction, {} as ActionState);
+  const [state, formAction, pending] = useActionState(boundAction, {} as ActionResult);
   const [logoUrl, setLogoUrl] = useState(company?.logo_url ?? "");
 
   return (

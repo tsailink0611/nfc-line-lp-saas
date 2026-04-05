@@ -5,12 +5,12 @@ import { getCurrentAdminContext } from "@/lib/admin-context";
 import { campaignSchema } from "@/lib/validators/campaign";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 export async function createCampaign(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const companyId = ctx.companyId;
@@ -40,9 +40,9 @@ export async function createCampaign(
 
 export async function updateCampaign(
   id: string,
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
@@ -71,7 +71,7 @@ export async function updateCampaign(
   redirect("/admin/campaigns");
 }
 
-export async function deleteCampaign(id: string): Promise<ActionState> {
+export async function deleteCampaign(id: string): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();

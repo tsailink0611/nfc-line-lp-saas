@@ -3,13 +3,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { companySettingsSchema, lpSettingsSchema } from "@/lib/validators/settings";
 import { revalidatePath } from "next/cache";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 export async function updateCompanySettings(
   companyId: string,
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const supabase = await createClient();
   const raw = Object.fromEntries(formData);
   const parsed = companySettingsSchema.safeParse(raw);
@@ -31,9 +31,9 @@ export async function updateCompanySettings(
 
 export async function updateLpSettings(
   companyId: string,
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const supabase = await createClient();
   const raw = Object.fromEntries(formData);
   const parsed = lpSettingsSchema.safeParse(raw);

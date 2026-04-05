@@ -5,12 +5,12 @@ import { getCurrentAdminContext } from "@/lib/admin-context";
 import { storeSchema } from "@/lib/validators/store";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 export async function createStore(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const companyId = ctx.companyId;
@@ -42,9 +42,9 @@ export async function createStore(
 
 export async function updateStore(
   id: string,
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
@@ -70,7 +70,7 @@ export async function updateStore(
   redirect("/admin/stores");
 }
 
-export async function deleteStore(id: string): Promise<ActionState> {
+export async function deleteStore(id: string): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();

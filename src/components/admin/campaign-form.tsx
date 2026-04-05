@@ -10,12 +10,12 @@ import { ErrorAlert } from "@/components/admin/error-alert";
 import { fieldError } from "@/lib/form-utils";
 import type { Campaign, Store } from "@/types/database";
 import { useActionState, useState } from "react";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 type Props = {
   stores: Store[];
   campaign?: Campaign | null;
-  action: (prev: ActionState, formData: FormData) => Promise<ActionState>;
+  action: (prev: ActionResult, formData: FormData) => Promise<ActionResult>;
 };
 
 export function CampaignForm({ stores, campaign, action }: Props) {

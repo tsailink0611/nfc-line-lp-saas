@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { createNfcToken } from "@/app/admin/nfc/actions";
 import { useActionState } from "react";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 type Props = {
   staffList: { id: string; last_name: string; first_name: string }[];
@@ -15,7 +15,7 @@ type Props = {
 export function NfcCreateForm({ staffList }: Props) {
   const [state, formAction, pending] = useActionState(
     createNfcToken,
-    {} as ActionState
+    {} as ActionResult
   );
 
   return (

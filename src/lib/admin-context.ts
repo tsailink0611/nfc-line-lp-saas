@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
+import type { AdminRole } from "@/types/database";
 
 export type AdminContext = {
   /** 操作対象の会社ID（super_adminの会社切替を考慮済み） */
@@ -10,7 +11,7 @@ export type AdminContext = {
     company_id: string;
     name: string;
     email: string;
-    role: string;
+    role: AdminRole;
     is_active: boolean;
   };
   /** super_adminが別会社を閲覧中かどうか */

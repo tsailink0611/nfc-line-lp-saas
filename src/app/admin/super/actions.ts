@@ -8,7 +8,7 @@ import { adminAccountSchema } from "@/lib/validators/admin-account";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 async function assertSuperAdmin() {
   const ctx = await getCurrentAdminContext();
@@ -19,9 +19,9 @@ async function assertSuperAdmin() {
 }
 
 export async function createCompany(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   try {
     await assertSuperAdmin();
   } catch {
@@ -70,9 +70,9 @@ export async function createCompany(
 }
 
 export async function createAdminAccount(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   try {
     await assertSuperAdmin();
   } catch {
@@ -123,7 +123,7 @@ export async function createAdminAccount(
 export async function toggleAdminAccount(
   accountId: string,
   isActive: boolean
-): Promise<{ error?: string }> {
+): Promise<ActionResult> {
   try {
     await assertSuperAdmin();
   } catch {

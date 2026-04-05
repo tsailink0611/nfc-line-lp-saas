@@ -10,7 +10,7 @@ import { fieldError } from "@/lib/form-utils";
 import { updateLpSettings } from "@/app/admin/settings/actions";
 import type { LpSettings } from "@/types/database";
 import { useActionState } from "react";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 
 type Props = {
   companyId: string;
@@ -19,7 +19,7 @@ type Props = {
 
 export function SettingsLpForm({ companyId, lpSettings }: Props) {
   const boundAction = updateLpSettings.bind(null, companyId);
-  const [state, formAction, pending] = useActionState(boundAction, {} as ActionState);
+  const [state, formAction, pending] = useActionState(boundAction, {} as ActionResult);
 
   return (
     <form action={formAction} className="space-y-6">

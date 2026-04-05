@@ -7,7 +7,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ErrorAlert } from "@/components/admin/error-alert";
 import { fieldError } from "@/lib/form-utils";
-import type { ActionState } from "@/app/admin/staff/actions";
+import type { ActionResult } from "@/types/actions";
 import type { createCompany } from "@/app/admin/super/actions";
 
 type Props = {
@@ -22,7 +22,7 @@ const INDUSTRY_OPTIONS = [
 ];
 
 export function SuperCompanyForm({ action }: Props) {
-  const [state, dispatch, pending] = useActionState<ActionState, FormData>(action, {});
+  const [state, dispatch, pending] = useActionState<ActionResult, FormData>(action, {});
 
   return (
     <form action={dispatch} className="space-y-5">

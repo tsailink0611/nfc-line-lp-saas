@@ -1,3 +1,5 @@
+export type AdminRole = "admin" | "super_admin" | "super_account_admin";
+
 export type Company = {
   id: string;
   company_code: string;
@@ -143,7 +145,7 @@ export type AdminUser = {
   auth_user_id: string | null;
   name: string;
   email: string;
-  role: string;
+  role: AdminRole;
   is_active: boolean;
   created_at: string;
   updated_at: string;

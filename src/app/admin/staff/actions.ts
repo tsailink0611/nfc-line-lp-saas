@@ -5,16 +5,16 @@ import { getCurrentAdminContext } from "@/lib/admin-context";
 import { staffSchema } from "@/lib/validators/staff";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { ActionResult } from "@/types/actions";
+export type { ActionResult };
 
-export type ActionState = {
-  error?: string;
-  fieldErrors?: Record<string, string[]>;
-};
+/** @deprecated ActionResult を使用してください */
+export type ActionState = ActionResult;
 
 export async function createStaff(
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const companyId = ctx.companyId;
@@ -49,9 +49,9 @@ export async function createStaff(
 
 export async function updateStaff(
   id: string,
-  _prev: ActionState,
+  _prev: ActionResult,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
@@ -86,7 +86,7 @@ export async function updateStaff(
   redirect("/admin/staff");
 }
 
-export async function deleteStaff(id: string): Promise<ActionState> {
+export async function deleteStaff(id: string): Promise<ActionResult> {
   const ctx = await getCurrentAdminContext();
   if (!ctx) return { error: "権限がありません" };
   const supabase = await createClient();
