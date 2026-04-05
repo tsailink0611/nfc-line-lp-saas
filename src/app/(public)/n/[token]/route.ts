@@ -65,7 +65,7 @@ export async function GET(
     .single()
     .then(({ data: lpSettings }) => {
       const n8nBase = process.env.N8N_WEBHOOK_BASE_URL;
-      const webhooks: Promise<void>[] = [];
+      const webhooks: Promise<unknown>[] = [];
 
       // メインイベントルーター（業種別フォロー）
       if (lpSettings?.webhook_url) {

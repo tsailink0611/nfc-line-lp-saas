@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { StaffLpData } from "@/types/database";
 import { generateThemeVars } from "@/lib/theme";
+
+type StaffLpPageData = StaffLpData & { monthly_tap_count: number };
 import { getIndustryTemplate } from "@/lib/industry-templates";
 import { HeroSection } from "@/components/lp/hero-section";
 import { ProfileSection } from "@/components/lp/profile-section";
@@ -171,7 +173,6 @@ export default async function StaffLpPage({
         <MapSection embedUrl={data.store.google_map_embed_url} />
         <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} staffSlug={data.slug} />
         <FooterSection company={data.company} lpSettings={data.lp_settings} />
-<<<<<<< HEAD
         <FloatingCta lineUrl={data.staff_line_url} ctaLabel={ctaLabel} staffSlug={data.slug} />
         <PageTracker staffMemberId={data.id} />
         {data.lp_settings?.offer_banner_text && (
