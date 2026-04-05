@@ -4,9 +4,15 @@ export type LineBenefit = {
   color: string;
 };
 
+export type LineStep = {
+  title: string;
+  description: string;
+};
+
 export type IndustryTemplate = {
   label: string;
   lineBenefits: LineBenefit[];
+  lineSteps: LineStep[];
   nfcLabel: string;
   specialtyLabel: string;
   storeLabel: string;
@@ -21,6 +27,11 @@ const templates: Record<string, IndustryTemplate> = {
     storeLabel: "店舗情報",
     defaultCatchCopy: "あなたの理想の住まいを一緒に探します",
     defaultCtaLabel: "LINEでお部屋を相談する",
+    lineSteps: [
+      { title: "友達追加（1秒で完了）", description: "ボタンをタップするだけ。登録費・月額費は一切かかりません。" },
+      { title: "ご希望エリア・条件を送信", description: "「〇〇駅近で2LDK探してます」のひと言でOK。" },
+      { title: "物件情報をお届け", description: "条件に合う物件や内見可能日程をご案内します。" },
+    ],
     lineBenefits: [
       {
         title: "新着物件情報",
@@ -51,6 +62,11 @@ const templates: Record<string, IndustryTemplate> = {
     storeLabel: "事務所情報",
     defaultCatchCopy: "理想の住まいを、確かな技術で形にします",
     defaultCtaLabel: "LINEで無料相談する",
+    lineSteps: [
+      { title: "友達追加（費用ゼロ）", description: "ボタンをタップするだけ。勧誘はしません。" },
+      { title: "悩みや写真を送信", description: "「ここを直したい」と写真を送るだけでOK。" },
+      { title: "現地確認・見積もりご案内", description: "無料でお伺いし、正式なお見積もりをご提示します。" },
+    ],
     lineBenefits: [
       {
         title: "施工事例",
@@ -81,6 +97,11 @@ const templates: Record<string, IndustryTemplate> = {
     storeLabel: "販売店情報",
     defaultCatchCopy: "理想の1台を、一緒に見つけましょう",
     defaultCtaLabel: "試乗・商談のご予約はこちら",
+    lineSteps: [
+      { title: "友達追加（1秒で完了）", description: "ボタンをタップするだけ。費用は一切かかりません。" },
+      { title: "気になる車種・予算を送信", description: "「〇〇の新型が気になる」のひと言でOK。" },
+      { title: "試乗・商談日程をご案内", description: "ご都合の良い日時でご来店をご予約いただけます。" },
+    ],
     lineBenefits: [
       {
         title: "リコール・重要情報",
@@ -111,6 +132,11 @@ const templates: Record<string, IndustryTemplate> = {
     storeLabel: "店舗情報",
     defaultCatchCopy: "あなたのご要望に、丁寧にお応えします",
     defaultCtaLabel: "LINEで相談する",
+    lineSteps: [
+      { title: "友達追加（費用ゼロ）", description: "ボタンをタップするだけ。登録は無料です。" },
+      { title: "ご用件を送信", description: "気軽にメッセージを送るだけでOK。" },
+      { title: "担当者がすぐに返信", description: "丁寧・迅速に対応いたします。" },
+    ],
     lineBenefits: [
       {
         title: "最新情報",

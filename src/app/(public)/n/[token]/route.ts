@@ -43,34 +43,68 @@ export async function GET(
     .insert({
       nfc_token_id: nfcToken.id,
       company_id: nfcToken.company_id,
-      event_type: "tag_tapped",
       user_agent: userAgent,
     })
     .then(() => {});
 
-  // webhook設定を取得してn8nへ通知（fire and forget）
+  const timestamp = new Date().toISOString();
+  const basePayload: WebhookPayload = {
+    event_type: "tag_tapped",
+    timestamp,
+    company_id: nfcToken.company_id,
+    token,
+    target_path: nfcToken.target_path,
+    user_agent: userAgent,
+  };
+
+  // メインイベントルーター + UTILワークフローを並列発火（fire and forget）
   supabase
     .from("lp_settings")
     .select("webhook_url, webhook_secret")
     .eq("company_id", nfcToken.company_id)
     .single()
     .then(({ data: lpSettings }) => {
-      if (!lpSettings?.webhook_url) return;
+      const n8nBase = process.env.N8N_WEBHOOK_BASE_URL;
+      const webhooks: Promise<void>[] = [];
 
-      const payload: WebhookPayload = {
-        event_type: "tag_tapped",
-        timestamp: new Date().toISOString(),
-        company_id: nfcToken.company_id,
-        token,
-        target_path: nfcToken.target_path,
-        user_agent: userAgent,
-      };
+      // メインイベントルーター（業種別フォロー）
+      if (lpSettings?.webhook_url) {
+        webhooks.push(
+          fireWebhook({
+            url: lpSettings.webhook_url,
+            secret: lpSettings.webhook_secret,
+            payload: basePayload,
+          })
+        );
+      }
 
-      fireWebhook({
-        url: lpSettings.webhook_url,
-        secret: lpSettings.webhook_secret,
-        payload,
-      });
+      // UTIL-HOT-LEAD-ALERT: 48h以内に同一NFCが2回タップされたら購買意欲MAXアラート
+      if (n8nBase) {
+        webhooks.push(
+          fireWebhook({
+            url: `${n8nBase}/webhook/hot-lead-check`,
+            payload: basePayload,
+          })
+        );
+
+        // UTIL-AFTER-HOURS-ALERT: 深夜22時〜早朝6時タップを翌朝8時に通知
+        webhooks.push(
+          fireWebhook({
+            url: `${n8nBase}/webhook/after-hours-check`,
+            payload: basePayload,
+          })
+        );
+
+        // AI-FOLLOW-UNIVERSAL: 1日・3日・7日・14日後にAI生成フォローメッセージをスタッフLINEへ送信
+        webhooks.push(
+          fireWebhook({
+            url: `${n8nBase}/webhook/ai-follow`,
+            payload: basePayload,
+          })
+        );
+      }
+
+      Promise.all(webhooks);
     });
 
   return NextResponse.redirect(

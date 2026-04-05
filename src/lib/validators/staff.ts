@@ -17,6 +17,7 @@ export const staffSchema = z.object({
   company_mobile_number: z.string().optional(),
   youtube_url: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
   booking_url: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
+  line_notify_user_id: z.string().optional(),
   is_public: z.boolean().default(false),
   sort_order: z.coerce.number().int().default(0),
 });

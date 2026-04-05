@@ -40,12 +40,17 @@ export default async function AdminLayout({
     if (viewingCompany) displayCompanyName = viewingCompany.company_name;
   }
 
+  // 会社コンテキストがあるか（通常adminは常にあり、super_adminは閲覧会社選択後）
+  const hasCompanyContext =
+    adminUser?.role !== "super_admin" || !!viewingCompanyId;
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar
         userName={adminUser?.name ?? "管理者"}
         companyName={displayCompanyName}
         role={adminUser?.role ?? "admin"}
+        hasCompanyContext={hasCompanyContext}
       />
       <main className="flex-1 overflow-auto">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">

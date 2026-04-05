@@ -1,14 +1,16 @@
 import { getIndustryTemplate } from "@/lib/industry-templates";
 import { LineIcon } from "./line-icon";
 import { FadeUp } from "./fade-up";
+import { TrackedLineLink } from "./tracked-link";
 
 type Props = {
   industryType: string;
   ctaLabel: string;
   lineUrl: string | null;
+  staffSlug: string;
 };
 
-export function LineBenefitsSection({ industryType, ctaLabel, lineUrl }: Props) {
+export function LineBenefitsSection({ industryType, ctaLabel, lineUrl, staffSlug }: Props) {
   const template = getIndustryTemplate(industryType);
 
   return (
@@ -45,15 +47,14 @@ export function LineBenefitsSection({ industryType, ctaLabel, lineUrl }: Props) 
 
         {lineUrl && (
           <div className="mt-8 text-center">
-            <a
+            <TrackedLineLink
               href={lineUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              staffSlug={staffSlug}
               className="lp-cta-pulse inline-flex items-center gap-2.5 rounded-full bg-[#06C755] px-8 py-3.5 text-base font-bold text-white shadow-xl transition hover:bg-[#05b04c] hover:-translate-y-0.5"
             >
               <LineIcon className="h-5 w-5" />
               {ctaLabel}
-            </a>
+            </TrackedLineLink>
           </div>
         )}
       </FadeUp>

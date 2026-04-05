@@ -13,9 +13,11 @@ import { CampaignSection } from "@/components/lp/campaign-section";
 import { GallerySection } from "@/components/lp/gallery-section";
 import { MapSection } from "@/components/lp/map-section";
 import { LineBenefitsSection } from "@/components/lp/line-benefits";
+import { LineStepsSection } from "@/components/lp/line-steps-section";
 import { FooterSection } from "@/components/lp/footer-section";
 import { FloatingCta } from "@/components/lp/floating-cta";
 import { PageTracker } from "@/components/lp/page-tracker";
+import { OfferBanner } from "@/components/lp/offer-banner";
 
 // ISR: 60秒キャッシュ
 export const revalidate = 60;
@@ -57,7 +59,7 @@ export async function generateMetadata({
   };
 }
 
-async function getStaffData(slug: string): Promise<StaffLpData | null> {
+async function getStaffData(slug: string): Promise<StaffLpPageData | null> {
   const supabase = await createClient();
 
   const { data: staff } = await supabase
@@ -105,6 +107,24 @@ async function getStaffData(slug: string): Promise<StaffLpData | null> {
 
   if (!store || !company) return null;
 
+  // 今月のタップ数（社会的証明バッジ用）
+  let monthly_tap_count = 0;
+  const { data: tokens } = await supabase
+    .from("nfc_tokens")
+    .select("id")
+    .eq("staff_member_id", staff.id);
+
+  if (tokens && tokens.length > 0) {
+    const tokenIds = tokens.map((t) => t.id);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { count } = await supabase
+      .from("nfc_resolutions")
+      .select("*", { count: "exact", head: true })
+      .in("nfc_token_id", tokenIds)
+      .gte("resolved_at", thirtyDaysAgo);
+    monthly_tap_count = count ?? 0;
+  }
+
   return {
     ...staff,
     store,
@@ -113,6 +133,7 @@ async function getStaffData(slug: string): Promise<StaffLpData | null> {
     galleries: galleries ?? [],
     campaigns: campaigns ?? [],
     lp_settings: lpSettings,
+    monthly_tap_count,
   };
 }
 
@@ -140,17 +161,28 @@ export default async function StaffLpPage({
       } as React.CSSProperties}
     >
       <div className="mx-auto max-w-2xl bg-white shadow-2xl lg:my-8 lg:rounded-2xl lg:overflow-hidden">
-        <HeroSection staff={data} template={template} />
+        <HeroSection staff={data} template={template} monthlyTapCount={data.monthly_tap_count} />
         <ProfileSection staff={data} />
         <SpecialtySection staff={data} specialtyLabel={template.specialtyLabel} />
         <CampaignSection campaigns={data.campaigns} />
         <GallerySection galleries={data.galleries} />
+        <LineStepsSection template={template} lineUrl={data.staff_line_url} ctaLabel={ctaLabel} staffSlug={data.slug} />
         <StoreSection store={data.store} storeLabel={template.storeLabel} />
         <MapSection embedUrl={data.store.google_map_embed_url} />
-        <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} />
+        <LineBenefitsSection industryType={industryType} ctaLabel={ctaLabel} lineUrl={data.staff_line_url} staffSlug={data.slug} />
         <FooterSection company={data.company} lpSettings={data.lp_settings} />
-        <FloatingCta lineUrl={data.staff_line_url} ctaLabel={ctaLabel} />
+<<<<<<< HEAD
+        <FloatingCta lineUrl={data.staff_line_url} ctaLabel={ctaLabel} staffSlug={data.slug} />
         <PageTracker staffMemberId={data.id} />
+        {data.lp_settings?.offer_banner_text && (
+          <OfferBanner
+            text={data.lp_settings.offer_banner_text}
+            lineUrl={data.staff_line_url}
+            ctaLabel={ctaLabel}
+            staffId={data.id}
+            staffSlug={data.slug}
+          />
+        )}
       </div>
     </div>
   );

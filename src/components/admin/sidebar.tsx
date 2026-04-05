@@ -20,22 +20,23 @@ import {
 import { useState } from "react";
 
 const navItems = [
-  { href: "/admin", label: "ダッシュボード", icon: LayoutDashboard },
-  { href: "/admin/staff", label: "担当者", icon: Users },
-  { href: "/admin/stores", label: "店舗", icon: Store },
-  { href: "/admin/campaigns", label: "キャンペーン", icon: Megaphone },
-  { href: "/admin/nfc", label: "NFC管理", icon: CreditCard },
-  { href: "/admin/analytics", label: "分析", icon: BarChart2 },
-  { href: "/admin/settings", label: "設定", icon: Settings },
+  { href: "/admin", label: "ダッシュボード", icon: LayoutDashboard, requiresCompany: false },
+  { href: "/admin/staff", label: "担当者", icon: Users, requiresCompany: true },
+  { href: "/admin/stores", label: "店舗", icon: Store, requiresCompany: true },
+  { href: "/admin/campaigns", label: "キャンペーン", icon: Megaphone, requiresCompany: true },
+  { href: "/admin/nfc", label: "NFC管理", icon: CreditCard, requiresCompany: true },
+  { href: "/admin/analytics", label: "分析", icon: BarChart2, requiresCompany: true },
+  { href: "/admin/settings", label: "設定", icon: Settings, requiresCompany: true },
 ];
 
 type Props = {
   userName: string;
   companyName: string;
   role?: string;
+  hasCompanyContext?: boolean;
 };
 
-export function AdminSidebar({ userName, companyName, role }: Props) {
+export function AdminSidebar({ userName, companyName, role, hasCompanyContext = true }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -60,22 +61,24 @@ export function AdminSidebar({ userName, companyName, role }: Props) {
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setMobileOpen(false)}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-              isActive(item.href)
-                ? "bg-gray-700 text-white"
-                : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
-            )}
-          >
-            <item.icon className="h-5 w-5 shrink-0" />
-            {item.label}
-          </Link>
-        ))}
+        {navItems
+          .filter((item) => !item.requiresCompany || hasCompanyContext)
+          .map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive(item.href)
+                  ? "bg-gray-700 text-white"
+                  : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+              )}
+            >
+              <item.icon className="h-5 w-5 shrink-0" />
+              {item.label}
+            </Link>
+          ))}
       </nav>
 
       <div className="border-t border-gray-700 px-3 py-4 space-y-1">

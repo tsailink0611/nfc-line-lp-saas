@@ -2,13 +2,15 @@ import Image from "next/image";
 import type { StaffLpData } from "@/types/database";
 import { LineIcon } from "./line-icon";
 import type { IndustryTemplate } from "@/lib/industry-templates";
+import { TrackedLineLink, TrackedPhoneLink } from "./tracked-link";
 
 type Props = {
   staff: StaffLpData;
   template: IndustryTemplate;
+  monthlyTapCount?: number;
 };
 
-export function HeroSection({ staff, template }: Props) {
+export function HeroSection({ staff, template, monthlyTapCount }: Props) {
   const catchCopy = staff.lp_settings?.hero_catch ?? template.defaultCatchCopy;
   const subCatch = staff.lp_settings?.hero_subcatch ?? "";
   const ctaLabel = staff.lp_settings?.cta_label ?? template.defaultCtaLabel;
@@ -49,7 +51,7 @@ export function HeroSection({ staff, template }: Props) {
       <div className="relative flex flex-col items-center px-6 pb-12 pt-14 text-center sm:px-8 sm:pb-14 sm:pt-16">
         {/* NFC タッチラベル */}
         <div
-          className="mb-8 flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.15em]"
+          className="flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.15em]"
           style={{
             border: "1px solid rgba(var(--lp-secondary-rgb), 0.3)",
             backgroundColor: "rgba(var(--lp-secondary-rgb), 0.08)",
@@ -61,6 +63,23 @@ export function HeroSection({ staff, template }: Props) {
           </svg>
           NFC Touch
         </div>
+
+        {/* タップ数バッジ（社会的証明） */}
+        {monthlyTapCount != null && monthlyTapCount >= 3 && (
+          <div
+            className="mb-8 mt-2.5 flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[11px] font-medium"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.12)",
+              color: "rgba(255,255,255,0.85)",
+            }}
+          >
+            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+            </svg>
+            今月 {monthlyTapCount}人がタッチ
+          </div>
+        )}
+        {(monthlyTapCount == null || monthlyTapCount < 3) && <div className="mb-8" />}
 
         {/* プロフィール写真 */}
         {staff.main_image_url ? (
@@ -142,21 +161,22 @@ export function HeroSection({ staff, template }: Props) {
 
         {/* LINE CTA */}
         {staff.staff_line_url && (
-          <a
+          <TrackedLineLink
             href={staff.staff_line_url}
-            target="_blank"
-            rel="noopener noreferrer"
+            staffSlug={staff.slug}
             className="lp-cta-pulse mt-9 inline-flex items-center gap-2.5 rounded-full bg-[#06C755] px-9 py-4 text-base font-bold text-white shadow-[0_8px_32px_rgba(6,199,85,0.35)] transition hover:bg-[#05b04c] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(6,199,85,0.4)]"
           >
             <LineIcon className="h-5 w-5" />
             {ctaLabel}
-          </a>
+          </TrackedLineLink>
         )}
 
         {/* 電話番号 */}
         {staff.company_mobile_number && (
-          <a
+          <TrackedPhoneLink
             href={`tel:${staff.company_mobile_number}`}
+            staffSlug={staff.slug}
+            phone={staff.company_mobile_number}
             className="mt-3 inline-flex items-center gap-1.5 text-xs transition hover:opacity-80"
             style={{ color: "var(--lp-hero-sub)" }}
           >
@@ -164,7 +184,7 @@ export function HeroSection({ staff, template }: Props) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             {staff.company_mobile_number}
-          </a>
+          </TrackedPhoneLink>
         )}
       </div>
     </section>

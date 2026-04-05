@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { LineIcon } from "./line-icon";
+import { trackLineAddClick } from "@/lib/analytics";
 
 type Props = {
   lineUrl: string | null;
   ctaLabel: string;
+  staffSlug: string;
 };
 
-export function FloatingCta({ lineUrl, ctaLabel }: Props) {
+export function FloatingCta({ lineUrl, ctaLabel, staffSlug }: Props) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function FloatingCta({ lineUrl, ctaLabel }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         className="flex w-full items-center justify-center gap-2 rounded-full bg-[#06C755] py-3.5 font-bold text-white shadow-lg transition hover:bg-[#05b04c]"
+        onClick={() => trackLineAddClick(staffSlug)}
       >
         <LineIcon className="h-5 w-5" />
         {ctaLabel}

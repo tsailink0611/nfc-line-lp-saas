@@ -239,6 +239,23 @@ export function StaffForm({ stores, staff, action }: Props) {
         </p>
       </div>
 
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <Label htmlFor="line_notify_user_id">
+          LINE通知先 User ID（AIフォロー用）
+        </Label>
+        <Input
+          id="line_notify_user_id"
+          name="line_notify_user_id"
+          defaultValue={staff?.line_notify_user_id ?? ""}
+          placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          className="mt-1 font-mono text-sm"
+        />
+        <p className="mt-1 text-xs text-amber-700">
+          n8n AIフォローメッセージの送り先LINE User IDです。未設定時はシステム共通IDにフォールバックします。
+          LINE Developers→Messaging API→Webhook で確認できます。
+        </p>
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <Label htmlFor="sort_order">表示順</Label>

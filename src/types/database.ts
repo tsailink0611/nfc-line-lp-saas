@@ -49,6 +49,7 @@ export type StaffMember = {
   company_mobile_number: string | null;
   youtube_url: string | null;
   booking_url: string | null;
+  line_notify_user_id: string | null;
   is_public: boolean;
   sort_order: number;
   created_at: string;
@@ -110,6 +111,7 @@ export type LpSettings = {
   hero_background_url: string | null;
   webhook_url: string | null;
   webhook_secret: string | null;
+  offer_banner_text: string | null;
   created_at: string;
   updated_at: string;
 };
